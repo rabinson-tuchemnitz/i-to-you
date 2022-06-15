@@ -1,6 +1,10 @@
 import { extendTheme, theme } from '@chakra-ui/react';
 
 export const iToYouTheme = extendTheme({
+  config: {
+    initialColorMode: 'dark',
+    useSystemColorMode: true,
+  },
   colors: {
     default: {
       400: '#9AB3CD',
