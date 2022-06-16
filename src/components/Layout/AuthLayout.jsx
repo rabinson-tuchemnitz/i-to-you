@@ -4,18 +4,16 @@ import Nav from '../Nav/Nav';
 import Footer from './Footer';
 import Header from './Header';
 
-const MainLayout = ({ children }) => {
+const AuthLayout = ({ children }) => {
   return (
     <VStack h="100vh" spacing="0px">
-      <Header>
-        <Nav />
-      </Header>
+      <Header />
       <Box w="100%" flexGrow={1}>
-        <Container maxW="6xl">{children}</Container>
+        <Container maxW="2xl">{children}</Container>
       </Box>
       <Footer />
     </VStack>
   );
 };
 
-export default MainLayout;
+export default AuthLayout;

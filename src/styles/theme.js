@@ -1,9 +1,15 @@
 import { extendTheme, theme } from '@chakra-ui/react';
 
 export const iToYouTheme = extendTheme({
-  config: {
-    initialColorMode: 'dark',
-    useSystemColorMode: true,
+  styles: {
+    global: {
+      'html, body': {
+        color: 'gray.600',
+      },
+      a: {
+        color: 'default.500',
+      },
+    },
   },
   colors: {
     default: {
@@ -46,5 +52,11 @@ export const iToYouTheme = extendTheme({
       500: '#3B4252',
       600: '#2E3440',
     },
+  },
+  breakpoints: {
+    sm: '40em',
+    md: '52em',
+    lg: '64em',
+    xl: '80em',
   },
 });
