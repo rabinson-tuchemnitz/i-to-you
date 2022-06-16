@@ -1,8 +1,7 @@
 import { Box, Container, VStack } from '@chakra-ui/react';
-import Nav from '../Nav/Nav';
 
-import Footer from './Footer';
-import Header from './Header';
+import Footer from '../Footer/Footer';
+import Header from '../Header/Header';
 
 const AuthLayout = ({ children }) => {
   return (
