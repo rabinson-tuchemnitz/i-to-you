@@ -1,7 +1,5 @@
 import { Box, Center, Container, Flex, Image } from '@chakra-ui/react';
 
-import Nav from '../Nav/Nav';
-
 const Header = ({ children }) => {
   return (
     <Box w="100%" bg="light.600" p={3}>

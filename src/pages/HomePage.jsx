@@ -1,11 +1,13 @@
-import { Text } from '@chakra-ui/react';
+import HeroBanner from '../components/Banner/HeroBanner';
+import DragBox from '../components/DragBox/DragBox';
 
 import MainLayout from '../components/Layout/MainLayout';
 
 const HomePage = () => {
   return (
     <MainLayout>
-      <Text> This is home page</Text>
+      <HeroBanner />
+      <DragBox />
     </MainLayout>
   );
 };

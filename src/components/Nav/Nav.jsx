@@ -42,6 +42,10 @@ const Nav = () => {
       {/* Hidden nav bar to be displayed when clicked menu btn */}
       <VStack
         display={display}
+        backgroundImage="/hero-img.png"
+        backgroundRepeat="no-repeat"
+        backgroundPosition="50% 70%"
+        backgroundSize="contain"
         w="100vw"
         h="100vh"
         bgColor="light.600"
