@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { IoMenu, IoClose } from 'react-icons/io5';
+import { siteMap } from '../../routes';
 
 const Nav = () => {
   const [display, changeDisplay] = useState('none');
@@ -16,14 +17,14 @@ const Nav = () => {
   return (
     <Flex>
       <HStack as="nav" spacing="5" display={['none', 'none', 'flex']}>
-        <Link to="/">
+        <Link to={siteMap.HomePage.path}>
           <Text>Transfer</Text>
         </Link>
-        <Link to="/active-file">
+        <Link to={siteMap.UploadedFiles.path}>
           <Text>Active Files</Text>
         </Link>
 
-        <Link to="/login">
+        <Link to={siteMap.LoginPage.path}>
           <Button variant="solid" colorScheme="default">
             <Text>Login</Text>
           </Button>
@@ -65,13 +66,13 @@ const Nav = () => {
             onClick={() => changeDisplay('none')}
           />
         </Flex>
-        <Link to="/">
+        <Link to={siteMap.HomePage.path}>
           <Button onClick={() => changeDisplay('none')}>Transfer</Button>
         </Link>
-        <Link to="/active-file">
+        <Link to={siteMap.UploadedFiles.path}>
           <Button onClick={() => changeDisplay('none')}>Active Files</Button>
         </Link>
-        <Link to="/login">
+        <Link to={siteMap.LoginPage.path}>
           <Button onClick={() => changeDisplay('none')}>Login</Button>
         </Link>
       </VStack>

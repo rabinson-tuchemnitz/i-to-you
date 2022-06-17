@@ -1,7 +1,7 @@
-import { HStack } from '@chakra-ui/react';
+import { Container, HStack } from '@chakra-ui/react';
 import MainLayout from '../components/Layout/MainLayout';
 
-const FilesPage = () => {
+const UploadedFilesPage = () => {
   return (
     <MainLayout>
       <HStack>
@@ -12,4 +12,4 @@ const FilesPage = () => {
   );
 };
 
-export default FilesPage;
+export default UploadedFilesPage;
