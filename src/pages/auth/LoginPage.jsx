@@ -5,6 +5,7 @@ import {
   FormLabel,
   FormHelperText,
   Heading,
+  HStack,
   Input,
   VStack,
   Button,
@@ -32,16 +33,18 @@ const LoginPage = () => {
               <Input
                 id="email"
                 type="email"
+                placeholder="Enter your email address"
                 isInvalid={false}
                 focusBorderColor="default.400"
                 errorBorderColor="danger.400"
               />
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor="email">Password</FormLabel>
+              <FormLabel htmlFor="password">Password</FormLabel>
               <Input
                 id="password"
                 type="password"
+                placeholder="Enter your password"
                 isInvalid={false}
                 focusBorderColor="default.400"
                 errorBorderColor="danger.400"
@@ -56,9 +59,14 @@ const LoginPage = () => {
             </Button>
           </VStack>
         </Center>
-        <Box>
+        <HStack spacing={10}>
+          {/* <Box> */}
+          <Link to="/">Back to Transfer</Link>
+          {/* </Box>
+          <Box> */}
           <Link to="/register">Don't have account?</Link>
-        </Box>
+          {/* </Box> */}
+        </HStack>
       </VStack>
     </AuthLayout>
   );
