@@ -17,7 +17,7 @@ const DragBox = () => {
           borderColor="default.500"
           borderRadius="2rem"
           m={4}
-          minH={['15rem']}>
+          minH={['22rem']}>
           <Text>Drag your files</Text>
         </Center>
         <Flex justifyContent="center">

@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import HomePage from './pages/HomePage';
-import TransferredFilesPage from './pages/TransferredFilesPage';
+import SharedFiles from './pages/SharedFiles';
 import Page404 from './pages/404Page';
 import { siteMap } from './routes';
 import LoginPage from './pages/auth/LoginPage';
@@ -20,8 +20,8 @@ const App = () => {
         <Route exact path={siteMap.HomePage.path} element={<HomePage />} />
         <Route
           exact
-          path={siteMap.TransferredFilesPage.path}
-          element={<TransferredFilesPage />}
+          path={siteMap.SharedFiles.path}
+          element={<SharedFiles />}
         />
         <Route path="*" element={<Page404 />} />
       </Routes>

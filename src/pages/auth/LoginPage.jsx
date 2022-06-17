@@ -60,12 +60,8 @@ const LoginPage = () => {
           </VStack>
         </Center>
         <HStack spacing={10}>
-          {/* <Box> */}
           <Link to="/">Back to Transfer</Link>
-          {/* </Box>
-          <Box> */}
           <Link to="/register">Don't have account?</Link>
-          {/* </Box> */}
         </HStack>
       </VStack>
     </AuthLayout>

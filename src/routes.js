@@ -4,10 +4,15 @@ export const siteMap = {
     path: '/',
     description: 'iToYou home page',
   },
-  TransferredFilesPage: {
-    title: 'Transferred Files',
-    path: '/files',
+  SharedFiles: {
+    title: 'Shared Files',
+    path: '/shared-files',
     description: 'Transferred files page',
+  },
+  UploadedFiles: {
+    title: 'Uploaded Files',
+    path: '/uploaded-files',
+    description: 'Users uploaded files',
   },
 
   /**

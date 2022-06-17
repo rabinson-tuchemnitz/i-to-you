@@ -1,6 +1,9 @@
 import { extendTheme } from '@chakra-ui/react';
 
 export const iToYouTheme = extendTheme({
+  config: {
+    useSystemColorMode: false,
+  },
   styles: {
     global: {
       'html, body': {

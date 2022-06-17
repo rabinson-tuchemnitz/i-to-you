@@ -2,12 +2,12 @@ import { Text } from '@chakra-ui/react';
 
 import MainLayout from '../components/Layout/MainLayout';
 
-const TransferredFilesPage = () => {
+const SharedFilesPage = () => {
   return (
     <MainLayout>
-      <Text> This is transferred page </Text>
+      <Text> This is shared files page </Text>
     </MainLayout>
   );
 };
 
-export default TransferredFilesPage;
+export default SharedFilesPage;
