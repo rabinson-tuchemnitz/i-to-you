@@ -1,4 +1,4 @@
-import { extendTheme } from '@chakra-ui/react';
+import { extendTheme, flexbox } from '@chakra-ui/react';
 
 export const iToYouTheme = extendTheme({
   config: {
@@ -7,7 +7,8 @@ export const iToYouTheme = extendTheme({
   styles: {
     global: {
       'html, body': {
-        color: 'gray.600',
+        backgroundColor: 'white',
+        color: 'grey',
       },
       a: {
         color: 'default.500',
