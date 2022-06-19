@@ -10,8 +10,8 @@ const MainLayout = ({ children }) => {
       <Header>
         <Nav />
       </Header>
-      <Box w="100%" flexGrow={1}>
-        <Container maxW="6xl" h="100%">
+      <Box w="100%" display="flex" flexGrow={1}>
+        <Container maxW="6xl" flexGrow={1}>
           {children}
         </Container>
       </Box>
