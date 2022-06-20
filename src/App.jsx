@@ -8,6 +8,7 @@ import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import UploadedFilesPage from './pages/UploadedFiles';
 import SharedFilesPage from './pages/SharedFiles';
+import PendingRequests from './pages/PendingRequests';
 
 const App = () => {
   return (
@@ -33,7 +34,11 @@ const App = () => {
           path={siteMap.SharedFiles.path}
           element={<SharedFilesPage />}
         />
-
+        <Route
+          exact
+          path={siteMap.PendingRequests.path}
+          element={<PendingRequests />}
+        />
         {/* Error Routes */}
         <Route path="*" element={<Page404 />} />
       </Routes>

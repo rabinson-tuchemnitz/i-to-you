@@ -11,7 +11,7 @@ const MainLayout = ({ children }) => {
         <Nav />
       </Header>
       <Box w="100%" display="flex" flexGrow={1}>
-        <Container maxW="6xl" flexGrow={1}>
+        <Container maxW="6xl" flexGrow={1} p={[4, 6, 8]}>
           {children}
         </Container>
       </Box>

@@ -16,6 +16,7 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
+import FileProperties from './FileProperties';
 
 const DetailBox = ({ file }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -42,30 +43,7 @@ const DetailBox = ({ file }) => {
             {/* File Properties */}
             <Flex flexDir="column" w="100%">
               <Text fontWeight="bold">Properties</Text>
-              <HStack m={2}>
-                <Flex flexDir="column">
-                  <Text>Type</Text>
-                  <Text>Size</Text>
-                  <Text>Status</Text>
-                  <Text>Uploaded</Text>
-                </Flex>
-                <Flex flexDir="column">
-                  <Text>{file?.type}</Text>
-                  <Text>{file?.size}</Text>
-                  <Text>
-                    {isBlocked ? (
-                      <Badge bgColor="danger.500" color="white">
-                        Blocked
-                      </Badge>
-                    ) : (
-                      <Badge bgColor="success.500" color="white">
-                        Unblocked
-                      </Badge>
-                    )}
-                  </Text>
-                  <Text>Uploaded</Text>
-                </Flex>
-              </HStack>
+              <FileProperties file={file} />
             </Flex>
 
             <br />
@@ -144,7 +122,6 @@ const DetailBox = ({ file }) => {
           <Text>No file selected</Text>
         </Flex>
       )}
-      {/* {file ? <Flex></Flex> : } */}
     </Flex>
   );
 };

@@ -14,6 +14,11 @@ export const siteMap = {
     path: '/uploaded-files',
     description: 'Users uploaded files',
   },
+  PendingRequests: {
+    title: 'Pending Requests',
+    path: '/pending-requests',
+    description: 'Pending file requests',
+  },
 
   /**
    * Auth Routes

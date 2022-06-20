@@ -62,7 +62,7 @@ const UploadedFilesPage = () => {
 
   return (
     <MainLayout>
-      <HStack m={[2, 3, 4, 5]} h="100%" justifySelf={'flex-start'}>
+      <HStack h="100%" justifySelf={'flex-start'}>
         <FilesGrid
           title="Uploaded Files"
           handleFileSelection={handleFileSelection}

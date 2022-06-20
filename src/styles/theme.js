@@ -17,6 +17,7 @@ export const iToYouTheme = extendTheme({
   },
   colors: {
     default: {
+      100: '#e1e8f0',
       400: '#9AB3CD',
       500: '#81A1C1',
       600: '#35506B',
