@@ -4,12 +4,6 @@ import {
   Flex,
   Heading,
   HStack,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
   SimpleGrid,
   Table,
   TableContainer,
@@ -25,6 +19,7 @@ import {
 import { useState } from 'react';
 import MainLayout from '../components/Layout/MainLayout';
 import ConfirmationModal from '../components/Modal/ConfirmationModal';
+import RequestReasonModal from '../components/Modal/RequestReasonModal';
 
 const requests = [
   {
@@ -36,8 +31,17 @@ const requests = [
     status: 'unblocked',
     uploaded_at: '22 May 2022',
     reasons: {
-      owner: [],
-      users: ['This file is corrupted', 'Another reason to block'],
+      owner: null,
+      users: [
+        {
+          requested_date: '02 Jul 1999',
+          body: 'The bad reason',
+        },
+        {
+          requested_date: '12 Apr 2000',
+          body: 'So not good.',
+        },
+      ],
     },
   },
   {
@@ -49,8 +53,20 @@ const requests = [
     status: 'blocked',
     uploaded_at: '22 May 2022',
     reasons: {
-      owner: [],
-      users: ['This file is corrupted', 'Another reason to block'],
+      owner: {
+        requested_date: '01 Jun 2022',
+        body: 'I want my file to be blocked instantly.',
+      },
+      users: [
+        {
+          requested_date: '02 Jul 2021',
+          body: 'This file seems to be bad',
+        },
+        {
+          requested_date: '12 Apr 2021',
+          body: 'Copyright Issue',
+        },
+      ],
     },
   },
   {
@@ -62,8 +78,20 @@ const requests = [
     status: 'blocked',
     uploaded_at: '22 May 2022',
     reasons: {
-      owner: ['I want to unblock is asap'],
-      users: ['This file is corrupted', 'Another reason to block'],
+      owner: {
+        requested_date: '13 Feb 2021',
+        body: 'I want my file to be blocked instantly.',
+      },
+      users: [
+        {
+          requested_date: '12 Jul 2021',
+          body: 'This file seems to be bad',
+        },
+        {
+          requested_date: '15 Apr 2021',
+          body: 'Copyright Issue',
+        },
+      ],
     },
   },
   {
@@ -75,8 +103,17 @@ const requests = [
     status: 'unblocked',
     uploaded_at: '22 May 2022',
     reasons: {
-      owner: ['I want to block is please'],
-      users: ['This file is corrupted', 'Another reason to block'],
+      owner: null,
+      users: [
+        {
+          requested_date: '02 Jul 2021',
+          body: 'This file seems to be bad',
+        },
+        {
+          requested_date: '12 Apr 2021',
+          body: 'Copyright Issue',
+        },
+      ],
     },
   },
 ];
@@ -103,6 +140,11 @@ const PendingRequests = () => {
   const handleOnActionBtnClicked = (request) => {
     setCurrentRequest(request);
     onConfirmationOpen();
+  };
+
+  const handleViewBtnClicked = (request) => {
+    setCurrentRequest(request);
+    onReasonsOpen();
   };
 
   return (
@@ -135,12 +177,12 @@ const PendingRequests = () => {
                   <Text>Size: {request.size}</Text>
                   <HStack w="100%">
                     <Button
-                      onClick={onReasonsOpen}
+                      onClick={() => handleViewBtnClicked(request)}
                       size="sm"
                       w="100%"
                       colorScheme="default">
                       View (
-                      {request.reasons.owner.length +
+                      {(request.reasons.owner ? 1 : 0) +
                         request.reasons.users.length}
                       )
                     </Button>
@@ -183,12 +225,12 @@ const PendingRequests = () => {
                       <Td>
                         <HStack w="100%">
                           <Button
-                            onClick={onReasonsOpen}
+                            onClick={() => handleViewBtnClicked(request)}
                             size="sm"
                             w="100%"
                             colorScheme="default">
                             View (
-                            {request.reasons.owner.length +
+                            {(request.reasons.owner ? 1 : 0) +
                               request.reasons.users.length}
                             )
                           </Button>
@@ -222,17 +264,13 @@ const PendingRequests = () => {
           />
 
           {/* Reasons List modal */}
-          <Modal
-            closeOnOverlayClick={false}
-            isOpen={isReasonsOpen}
-            onClose={onReasonsClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Reasons for request</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody pb={6}>These are reasons</ModalBody>
-            </ModalContent>
-          </Modal>
+          {currentRequest && (
+            <RequestReasonModal
+              reasons={currentRequest.reasons}
+              isReasonsOpen={isReasonsOpen}
+              onReasonsClose={onReasonsClose}
+            />
+          )}
         </Flex>
       </Flex>
     </MainLayout>
