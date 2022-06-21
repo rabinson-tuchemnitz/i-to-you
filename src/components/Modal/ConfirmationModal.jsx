@@ -39,7 +39,7 @@ const ConfirmationModal = ({
             </Button>
             <Button
               colorScheme={file.action_to == 'block' ? 'danger' : 'success'}
-              onClick={() => handleConfirmationAction(file)}
+              onClick={() => handleConfirmationAction(file.id, file.status)}
               ml={3}>
               {file.action_to == 'block' ? 'Block' : 'Unblock'}
             </Button>

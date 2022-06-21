@@ -49,7 +49,7 @@ const RequestReasonModal = ({ reasons, isReasonsOpen, onReasonsClose }) => {
             )}
             {reasons?.users.map((userRequest) => {
               return (
-                <AccordionItem>
+                <AccordionItem key={userRequest.id}>
                   <h2>
                     <AccordionButton>
                       <Box flex="1" textAlign="left">

@@ -14,6 +14,7 @@ import {
   Thead,
   Tr,
   useDisclosure,
+  useToast,
   VStack,
 } from '@chakra-ui/react';
 import { useState } from 'react';
@@ -34,10 +35,12 @@ const requests = [
       owner: null,
       users: [
         {
+          id: 1,
           requested_date: '02 Jul 1999',
           body: 'The bad reason',
         },
         {
+          id: 2,
           requested_date: '12 Apr 2000',
           body: 'So not good.',
         },
@@ -59,10 +62,12 @@ const requests = [
       },
       users: [
         {
+          id: 3,
           requested_date: '02 Jul 2021',
           body: 'This file seems to be bad',
         },
         {
+          id: 4,
           requested_date: '12 Apr 2021',
           body: 'Copyright Issue',
         },
@@ -84,10 +89,12 @@ const requests = [
       },
       users: [
         {
+          id: 5,
           requested_date: '12 Jul 2021',
           body: 'This file seems to be bad',
         },
         {
+          id: 6,
           requested_date: '15 Apr 2021',
           body: 'Copyright Issue',
         },
@@ -106,10 +113,12 @@ const requests = [
       owner: null,
       users: [
         {
+          id: 7,
           requested_date: '02 Jul 2021',
           body: 'This file seems to be bad',
         },
         {
+          id: 8,
           requested_date: '12 Apr 2021',
           body: 'Copyright Issue',
         },
@@ -130,11 +139,30 @@ const PendingRequests = () => {
     onOpen: onReasonsOpen,
     onClose: onReasonsClose,
   } = useDisclosure();
-
+  const [pendingRequests, setPendingRequest] = useState(requests);
   const [currentRequest, setCurrentRequest] = useState({});
+  const toast = useToast();
 
-  const handleConfirmationAction = (id, type) => {
-    console.log(id, type);
+  const handleConfirmationAction = (id, updatedStatus) => {
+    console.log(pendingRequests);
+    // // Update the state
+    const newPendingRequests = pendingRequests.filter((data) => data.id != id);
+    setPendingRequest(newPendingRequests);
+    // //Close the modal
+    onConfirmationClose();
+
+    //Show the toast message
+    const toastTitle =
+      updatedStatus === 'blocked'
+        ? 'File unblocked successfully'
+        : 'File blocked successfully';
+
+    toast({
+      title: toastTitle,
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    });
   };
 
   const handleOnActionBtnClicked = (request) => {
@@ -169,9 +197,13 @@ const PendingRequests = () => {
             columns={[1, 2]}
             spacing={5}
             display={['grid', 'grid', 'none']}>
-            {requests.map((request) => {
+            {pendingRequests.map((request) => {
               return (
-                <VStack border="1px solid" borderColor="default" p={3}>
+                <VStack
+                  key={request.id}
+                  order="1px solid"
+                  borderColor="default"
+                  p={3}>
                   <Heading size="md">{request.name}</Heading>
                   <Text>Type: {request.type}</Text>
                   <Text>Size: {request.size}</Text>
@@ -215,7 +247,7 @@ const PendingRequests = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {requests.map((request, index) => {
+                {pendingRequests.map((request, index) => {
                   return (
                     <Tr key={request.id}>
                       <Td>{index + 1}</Td>
