@@ -23,17 +23,7 @@ const DetailBox = ({ file }) => {
   const isBlocked = file && file.status == 'blocked';
 
   return (
-    <Flex
-      minW="19rem"
-      maxW="22rem"
-      p={4}
-      display={['none', 'none', 'flex', 'flex']}
-      h="100%"
-      flexGrow={1}
-      border="1px solid"
-      borderColor="light.400"
-      borderRadius="12px"
-      boxShadow="4px 4px 15px rgba(236, 239, 244, 1)">
+    <>
       {file ? (
         <Flex flexDir="column" w="100%">
           <Heading as="h2" size="md">
@@ -122,7 +112,7 @@ const DetailBox = ({ file }) => {
           <Text>No file selected</Text>
         </Flex>
       )}
-    </Flex>
+    </>
   );
 };
 

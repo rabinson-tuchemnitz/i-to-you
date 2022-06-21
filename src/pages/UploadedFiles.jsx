@@ -1,5 +1,18 @@
 import { useState } from 'react';
-import { Flex, HStack } from '@chakra-ui/react';
+import {
+  Button,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  Flex,
+  HStack,
+  useBreakpointValue,
+  useDisclosure,
+} from '@chakra-ui/react';
 
 import FilesGrid from '../components/File/FilesGrid';
 import MainLayout from '../components/Layout/MainLayout';
@@ -41,23 +54,28 @@ const files = [
 ];
 
 const UploadedFilesPage = () => {
-  const [showDrawer, setShowDrawer] = useState(false);
+  const {
+    isOpen: isDrawerOpen,
+    onOpen: onDrawerOpen,
+    onClose: onDrawerClose,
+  } = useDisclosure();
   const [selectedFile, setSelectedFile] = useState(null);
-
-  const handleOpenDrawer = () => {
-    setShowDrawer(true);
-  };
-
-  const handleCloseDrawer = () => {
-    setShowDrawer(false);
-  };
-
+  const isLargeScreen = useBreakpointValue({
+    sm: false,
+    md: false,
+    lg: true,
+    xl: true,
+  });
   const handleFileSelection = (id) => {
     let selectedItem = files?.find((item) => {
       return item.id == id;
     });
 
     setSelectedFile(selectedItem);
+
+    if (!isLargeScreen) {
+      onDrawerOpen();
+    }
   };
 
   return (
@@ -68,7 +86,37 @@ const UploadedFilesPage = () => {
           handleFileSelection={handleFileSelection}
           files={files}
         />
-        <DetailBox file={selectedFile} />
+        {/* Detail box for desktop view */}
+        <Flex
+          minW="19rem"
+          maxW="22rem"
+          p={4}
+          display={['none', 'none', 'flex', 'flex']}
+          h="100%"
+          flexGrow={1}
+          border="1px solid"
+          borderColor="light.400"
+          borderRadius="12px"
+          boxShadow="4px 4px 15px rgba(236, 239, 244, 1)">
+          <DetailBox file={selectedFile} />
+        </Flex>
+
+        {/* Drawer detail box from mobile view */}
+        <Drawer
+          display={['flex', 'flex', 'none']}
+          isOpen={isDrawerOpen}
+          placement="right"
+          onClose={onDrawerClose}>
+          <DrawerOverlay />
+          <DrawerContent>
+            <DrawerCloseButton />
+            <br />
+            <br />
+            <DrawerBody>
+              <DetailBox file={selectedFile} />
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
       </HStack>
     </MainLayout>
   );
