@@ -1,4 +1,5 @@
 import { Badge, Flex, HStack, Text } from '@chakra-ui/react';
+import { bytesToSize } from '../../utils/helper';
 
 const FileProperties = ({ file }) => {
   return (
@@ -11,7 +12,7 @@ const FileProperties = ({ file }) => {
       </Flex>
       <Flex flexDir="column" width="100%">
         <Text>{file?.type}</Text>
-        <Text>{file?.size}</Text>
+        <Text>{bytesToSize(file.size_in_bytes)}</Text>
         <Text>
           {file?.status == 'blocked' ? (
             <Badge bgColor="danger.500" color="white">

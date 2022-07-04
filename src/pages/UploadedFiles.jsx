@@ -83,9 +83,11 @@ const UploadedFilesPage = () => {
       onDrawerOpen();
     }
   };
+
   useEffect(() => {
     getUploadedFiles()
       .then((response) => {
+        console.log(response.data.data);
         setFileData(response.data.data);
       })
       .catch((err) => {

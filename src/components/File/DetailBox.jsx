@@ -15,12 +15,24 @@ import {
   Textarea,
   useDisclosure,
   VStack,
+  useToast,
 } from '@chakra-ui/react';
 import FileProperties from './FileProperties';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const DetailBox = ({ file }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const isBlocked = file && file.status == 'blocked';
+  const toast = useToast();
+
+  const handleCopyLink = () => {
+    toast({
+      title: 'Download link copied!',
+      status: 'info',
+      position: 'top-right',
+      isClosable: true,
+    });
+  };
 
   return (
     <>
@@ -35,20 +47,24 @@ const DetailBox = ({ file }) => {
               <Text fontWeight="bold">Properties</Text>
               <FileProperties file={file} />
             </Flex>
-
             <br />
 
             {/* Transfer Actions */}
             <Flex flexDir="column" w="100%">
               <Text fontWeight="bold">Transfer</Text>
               <VStack m={2}>
-                <Button
-                  size="sm"
-                  variant="solid"
-                  colorScheme="primary"
-                  w="100%">
-                  Copy Link
-                </Button>
+                <CopyToClipboard
+                  onCopy={handleCopyLink}
+                  text={file.download_url}>
+                  <Button
+                    size="sm"
+                    variant="solid"
+                    colorScheme="primary"
+                    w="100%">
+                    Copy Link
+                  </Button>
+                </CopyToClipboard>
+
                 <Button
                   size="sm"
                   variant="solid"
@@ -58,9 +74,7 @@ const DetailBox = ({ file }) => {
                 </Button>
               </VStack>
             </Flex>
-
             <br />
-
             {/* Transfer Actions */}
             <Flex flexDir="column" w="100%">
               <Text fontWeight="bold">Request</Text>
