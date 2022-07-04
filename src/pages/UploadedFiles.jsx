@@ -1,22 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
-  Button,
+  Center,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
   DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
   DrawerOverlay,
   Flex,
   HStack,
+  Spinner,
   useBreakpointValue,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 
 import FilesGrid from '../components/File/FilesGrid';
 import MainLayout from '../components/Layout/MainLayout';
 import DetailBox from '../components/File/DetailBox';
+import { getUploadedFiles } from '../apis/file';
 
 const files = [
   {
@@ -66,8 +67,13 @@ const UploadedFilesPage = () => {
     lg: true,
     xl: true,
   });
+
+  const [fileData, setFileData] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+  const toast = useToast();
+
   const handleFileSelection = (id) => {
-    let selectedItem = files?.find((item) => {
+    let selectedItem = fileData?.find((item) => {
       return item.id == id;
     });
 
@@ -77,46 +83,73 @@ const UploadedFilesPage = () => {
       onDrawerOpen();
     }
   };
+  useEffect(() => {
+    getUploadedFiles()
+      .then((response) => {
+        setFileData(response.data.data);
+      })
+      .catch((err) => {
+        toast({
+          title: 'Something went wrong',
+          position: 'top-right',
+          isClosable: true,
+          status: 'error',
+        });
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
 
   return (
     <MainLayout>
-      <HStack h="100%" justifySelf={'flex-start'}>
-        <FilesGrid
-          title="Uploaded Files"
-          handleFileSelection={handleFileSelection}
-          files={files}
-        />
-        {/* Detail box for desktop view */}
-        <Flex
-          minW="19rem"
-          maxW="22rem"
-          p={4}
-          display={['none', 'none', 'flex', 'flex']}
-          h="100%"
-          flexGrow={1}
-          border="1px solid"
-          borderColor="light.400"
-          borderRadius="12px"
-          boxShadow="4px 4px 15px rgba(236, 239, 244, 1)">
-          <DetailBox file={selectedFile} />
-        </Flex>
+      {isLoading && (
+        <Center>
+          <Spinner />
+        </Center>
+      )}
 
-        {/* Drawer detail box from mobile view */}
-        <Drawer
-          display={['flex', 'flex', 'none']}
-          isOpen={isDrawerOpen}
-          placement="right"
-          onClose={onDrawerClose}>
-          <DrawerOverlay />
-          <DrawerContent>
-            <DrawerCloseButton />
-            <br />
-            <br />
-            <DrawerBody>
+      <HStack h="100%" justifySelf={'flex-start'}>
+        {!isLoading && (
+          <>
+            <FilesGrid
+              title="Uploaded Files"
+              handleFileSelection={handleFileSelection}
+              files={fileData}
+            />
+            {/* Detail box for desktop view */}
+            <Flex
+              minW="19rem"
+              maxW="22rem"
+              p={4}
+              display={['none', 'none', 'flex', 'flex']}
+              h="100%"
+              flexGrow={1}
+              border="1px solid"
+              borderColor="light.400"
+              borderRadius="12px"
+              boxShadow="4px 4px 15px rgba(236, 239, 244, 1)">
               <DetailBox file={selectedFile} />
-            </DrawerBody>
-          </DrawerContent>
-        </Drawer>
+            </Flex>
+
+            {/* Drawer detail box from mobile view */}
+            <Drawer
+              display={['flex', 'flex', 'none']}
+              isOpen={isDrawerOpen}
+              placement="right"
+              onClose={onDrawerClose}>
+              <DrawerOverlay />
+              <DrawerContent>
+                <DrawerCloseButton />
+                <br />
+                <br />
+                <DrawerBody>
+                  <DetailBox file={selectedFile} />
+                </DrawerBody>
+              </DrawerContent>
+            </Drawer>
+          </>
+        )}
       </HStack>
     </MainLayout>
   );

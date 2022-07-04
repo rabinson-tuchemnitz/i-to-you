@@ -24,7 +24,7 @@ export const httpClientMultipartInstance = httpClient({
   ],
 });
 
-const httpClientAuthInstance = httpClient({
+export const httpClientAuthInstance = httpClient({
   transformRequest: [
     (data, headers) => {
       headers['Accept'] = 'application/json';
