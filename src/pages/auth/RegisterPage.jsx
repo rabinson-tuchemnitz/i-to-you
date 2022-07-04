@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import {
   Box,
   Center,
@@ -9,25 +10,67 @@ import {
   Input,
   VStack,
   Button,
+  useToast,
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
 import AuthLayout from '../../components/Layout/AuthLayout';
+import { registerUser } from '../../apis/auth';
 
 const RegisterPage = () => {
+  let navigate = useNavigate();
+  const toast = useToast();
   const {
     handleSubmit,
     register,
+    setError,
+    reset,
+    formState,
     formState: { errors, isSubmitting },
   } = useForm();
-  const { ref } = register('password');
 
-  const onSubmit = (data) => {
-    // registerUser(data)
-    //   .then((response) => console.log('res'))
-    //   .catch((error) => console.log(error));
+  const onSubmit = async (data) => {
+    try {
+      if (data.password != data.confirm_password) {
+        setError('confirm_password', {
+          message: 'Passwords does not match',
+        });
+      } else {
+        await registerUser(data);
+        navigate('/login');
+        toast({
+          title: 'Registration successful.',
+          status: 'success',
+          position: 'top-right',
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      if (error.response.status != 422) {
+        toast({
+          title: 'Something went wrong',
+          position: 'top-right',
+          isClosable: true,
+          status: 'error',
+        });
+      } else {
+        error.response.data.forEach((err) => {
+          setError(err.context.key, { message: err.message });
+        });
+      }
+    }
   };
+  useEffect(() => {
+    if (formState.isSubmitSuccessful) {
+      reset({
+        email: '',
+        password: '',
+        confirm_password: '',
+        name: '',
+      });
+    }
+  }, [formState, reset]);
 
   return (
     <AuthLayout>
@@ -42,7 +85,7 @@ const RegisterPage = () => {
             <Box>
               <Heading>Register</Heading>
             </Box>
-            <FormControl>
+            <FormControl isInvalid={errors.name}>
               <FormLabel htmlFor="name">Name</FormLabel>
               <Input
                 id="name"
@@ -63,7 +106,7 @@ const RegisterPage = () => {
                 {errors.name && errors.name.message}
               </FormErrorMessage>
             </FormControl>
-            <FormControl>
+            <FormControl isInvalid={errors.email}>
               <FormLabel htmlFor="email">Email</FormLabel>
               <Input
                 id="email"
@@ -84,7 +127,7 @@ const RegisterPage = () => {
                 {errors.email && errors.email.message}
               </FormErrorMessage>
             </FormControl>
-            <FormControl>
+            <FormControl isInvalid={errors.password}>
               <FormLabel htmlFor="password">Password</FormLabel>
               <Input
                 id="password"
@@ -105,15 +148,22 @@ const RegisterPage = () => {
                 {errors.password && errors.password.message}
               </FormErrorMessage>
             </FormControl>
-            <FormControl>
+            <FormControl isInvalid={errors.confirm_password}>
               <FormLabel htmlFor="confirm_password">Confirm Password</FormLabel>
               <Input
                 id="confirm_password"
-                type="confirm_password"
+                type="password"
                 placeholder="Enter your password again"
                 isInvalid={errors.confirm_password}
                 focusBorderColor="default.400"
                 errorBorderColor="danger.400"
+                {...register('confirm_password', {
+                  required: 'This is required',
+                  minLength: {
+                    value: 8,
+                    message: 'Minimum length should be 8',
+                  },
+                })}
               />
               <FormErrorMessage>
                 {errors.confirm_password && errors.confirm_password.message}
