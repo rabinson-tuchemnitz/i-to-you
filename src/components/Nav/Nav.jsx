@@ -10,25 +10,43 @@ import {
 import { Link } from 'react-router-dom';
 import { IoMenu, IoClose } from 'react-icons/io5';
 import { siteMap } from '../../routes';
+import { isAuthenticated } from '../../utils/jwt';
+import { removeItem } from '../../utils/storage';
 
 const Nav = () => {
   const [display, changeDisplay] = useState('none');
 
+  const handleLogout = () => {
+    removeItem('token');
+    console.log('removed');
+  };
   return (
     <Flex>
       <HStack as="nav" spacing="5" display={['none', 'none', 'flex']}>
         <Link to={siteMap.HomePage.path}>
           <Text>Transfer</Text>
         </Link>
-        <Link to={siteMap.UploadedFiles.path}>
-          <Text>Active Files</Text>
-        </Link>
+        {isAuthenticated() && (
+          <>
+            <Link to={siteMap.UploadedFiles.path}>
+              <Text>My Files</Text>
+            </Link>
+            <Button
+              variant="solid"
+              colorScheme="default"
+              onClick={handleLogout}>
+              <Text>Logout</Text>
+            </Button>
+          </>
+        )}
 
-        <Link to={siteMap.LoginPage.path}>
-          <Button variant="solid" colorScheme="default">
-            <Text>Login</Text>
-          </Button>
-        </Link>
+        {!isAuthenticated() && (
+          <Link to={siteMap.LoginPage.path}>
+            <Button variant="solid" colorScheme="default">
+              <Text>Login</Text>
+            </Button>
+          </Link>
+        )}
       </HStack>
 
       {/* Menu Btn to open navbar */}
@@ -69,12 +87,26 @@ const Nav = () => {
         <Link to={siteMap.HomePage.path}>
           <Button onClick={() => changeDisplay('none')}>Transfer</Button>
         </Link>
-        <Link to={siteMap.UploadedFiles.path}>
-          <Button onClick={() => changeDisplay('none')}>Active Files</Button>
-        </Link>
-        <Link to={siteMap.LoginPage.path}>
-          <Button onClick={() => changeDisplay('none')}>Login</Button>
-        </Link>
+        {isAuthenticated() && (
+          <>
+            <Link to={siteMap.UploadedFiles.path}>
+              <Button onClick={() => changeDisplay('none')}>
+                Active Files
+              </Button>
+            </Link>
+            <Button
+              variant="solid"
+              colorScheme="default"
+              onClick={handleLogout}>
+              <Text>Logout</Text>
+            </Button>
+          </>
+        )}
+        {!isAuthenticated() && (
+          <Link to={siteMap.LoginPage.path}>
+            <Button onClick={() => changeDisplay('none')}>Login</Button>
+          </Link>
+        )}
       </VStack>
     </Flex>
   );

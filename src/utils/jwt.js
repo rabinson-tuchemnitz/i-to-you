@@ -2,7 +2,8 @@ import jwtDecode from 'jwt-decode';
 import { getItem } from './storage';
 
 export const getDecodedToken = () => {
-  if ((token = getItem('token'))) {
+  let token = getItem('token');
+  if (token) {
     return jwtDecode(token);
   }
   return null;
