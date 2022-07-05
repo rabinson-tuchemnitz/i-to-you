@@ -1,6 +1,7 @@
 import httpClient from './httpClient';
 import convertJsonToFormData from '../utils/convertJsonToFormData';
 import { getItem, removeItem } from '../utils/storage';
+import { isAuthenticated } from '../utils/jwt';
 
 export const httpClientInstance = httpClient({
   transformRequest: [
@@ -41,6 +42,20 @@ export const httpClientAuthInstance = httpClient({
     }
     return status >= 200 && status < 300;
   },
+});
+
+export const httpClientOptionalAuthInstance = httpClient({
+  transformRequest: [
+    (data, headers) => {
+      headers['Accept'] = 'application/json';
+      headers['Content-Type'] = 'application/json';
+      if (isAuthenticated()) {
+        headers['Authorization'] = `Bearer ${getItem('token')}`;
+      }
+
+      return JSON.stringify(data);
+    },
+  ],
 });
 
 export const httpClientMultipartAuthInstance = httpClient({

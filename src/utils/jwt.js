@@ -17,3 +17,14 @@ export const isAuthenticated = () => {
   }
   return false;
 };
+
+export const authUserInfo = () => {
+  if (isAuthenticated) {
+    let decodedToken = getDecodedToken();
+    return {
+      name: decodedToken.name,
+      email: decodedToken.email,
+    };
+  }
+  return false;
+};

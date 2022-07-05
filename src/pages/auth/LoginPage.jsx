@@ -84,7 +84,7 @@ const LoginPage = () => {
             <Box>
               <Heading>Login</Heading>
             </Box>
-            <FormControl>
+            <FormControl isInvalid={errors.email || errors.password}>
               <FormLabel htmlFor="email">Email</FormLabel>
               <Input
                 id="email"
@@ -122,9 +122,6 @@ const LoginPage = () => {
                   },
                 })}
               />
-              <FormHelperText display="none">
-                Invalid Credentials
-              </FormHelperText>
             </FormControl>
             <br />
             <Button

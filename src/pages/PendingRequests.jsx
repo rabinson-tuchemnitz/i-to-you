@@ -184,7 +184,6 @@ const PendingRequests = () => {
         borderColor="light.400"
         borderRadius="12px"
         boxShadow="4px 4px 15px rgba(236, 239, 244, 1)"
-        overflow="hidden"
         p={3}>
         <Flex flexDir="column" w="100%" p={2}>
           <Heading as="h2" size="md">

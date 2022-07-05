@@ -1,17 +1,24 @@
 import { useState } from 'react';
 import {
   Button,
+  Box,
   Flex,
   HStack,
   IconButton,
   Text,
   VStack,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { IoMenu, IoClose } from 'react-icons/io5';
 import { siteMap } from '../../routes';
-import { isAuthenticated } from '../../utils/jwt';
+import { authUserInfo, isAuthenticated } from '../../utils/jwt';
 import { removeItem } from '../../utils/storage';
+import { IoLogOutOutline } from 'react-icons/io5';
+import { ChevronDownIcon } from '@chakra-ui/icons';
 
 const Nav = () => {
   const [display, changeDisplay] = useState('none');
@@ -31,12 +38,14 @@ const Nav = () => {
             <Link to={siteMap.UploadedFiles.path}>
               <Text>My Files</Text>
             </Link>
-            <Button
-              variant="solid"
-              colorScheme="default"
-              onClick={handleLogout}>
-              <Text>Logout</Text>
-            </Button>
+            <Menu>
+              <MenuButton>
+                {authUserInfo().name} <ChevronDownIcon />
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </MenuList>
+            </Menu>
           </>
         )}
 

@@ -1,24 +1,15 @@
 import {
-  Badge,
   Button,
   Flex,
   Heading,
-  HStack,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Text,
-  Textarea,
   useDisclosure,
   VStack,
   useToast,
 } from '@chakra-ui/react';
 import FileProperties from './FileProperties';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import RequestChangeModal from '../Modal/RequestChangeModal';
 
 const DetailBox = ({ file }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -91,32 +82,11 @@ const DetailBox = ({ file }) => {
                 </Button>
 
                 {/* Form to request blocking or unblocking */}
-                <Modal isOpen={isOpen} onClose={onClose}>
-                  <ModalOverlay />
-                  <ModalContent>
-                    <ModalHeader>
-                      Request to {isBlocked ? 'unblock' : 'block'}
-                    </ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                      <Textarea
-                        size="md"
-                        placeholder="Reason for the request"
-                      />
-                    </ModalBody>
-
-                    <ModalFooter>
-                      <Button colorScheme="default" mr={3} onClick={onClose}>
-                        Close
-                      </Button>
-                      <Button
-                        variant="solid"
-                        colorScheme={isBlocked ? 'success' : 'danger'}>
-                        {isBlocked ? 'Unblock' : 'Block'}
-                      </Button>
-                    </ModalFooter>
-                  </ModalContent>
-                </Modal>
+                <RequestChangeModal
+                  isOpen={isOpen}
+                  onClose={onClose}
+                  file={file}
+                />
               </VStack>
             </Flex>
           </VStack>
