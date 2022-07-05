@@ -1,4 +1,11 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Outlet,
+  Navigate,
+  useLocation,
+} from 'react-router-dom';
 
 import HomePage from './pages/Home';
 import SharedFiles from './pages/SharedFiles';
@@ -10,6 +17,7 @@ import UploadedFilesPage from './pages/UploadedFiles';
 import SharedFilesPage from './pages/SharedFiles';
 import PendingRequests from './pages/PendingRequests';
 import FileDetails from './pages/FileDetails';
+import { authUserInfo, isAuthenticated } from './utils/jwt';
 
 const App = () => {
   return (
@@ -27,20 +35,29 @@ const App = () => {
         <Route exact path={siteMap.HomePage.path} element={<HomePage />} />
         <Route
           exact
-          path={siteMap.UploadedFiles.path}
-          element={<UploadedFilesPage />}
-        />
-        <Route
-          exact
           path={siteMap.SharedFiles.path}
           element={<SharedFilesPage />}
         />
-        <Route
-          exact
-          path={siteMap.PendingRequests.path}
-          element={<PendingRequests />}
-        />
         <Route path={siteMap.FileDetails.path} element={<FileDetails />} />
+
+        {/* User Routes */}
+        <Route element={<RequiredAuth role={'user'} />}>
+          <Route
+            exact
+            path={siteMap.UploadedFiles.path}
+            element={<UploadedFilesPage />}
+          />
+        </Route>
+
+        {/* Admin Routes */}
+        <Route element={<RequiredAuth role="admin" />}>
+          <Route
+            exact
+            path={siteMap.PendingRequests.path}
+            element={<PendingRequests />}
+          />
+        </Route>
+
         {/* Error Routes */}
         <Route path="*" element={<Page404 />} />
       </Routes>
@@ -49,3 +66,17 @@ const App = () => {
 };
 
 export default App;
+
+function RequiredAuth({ role }) {
+  let location = useLocation();
+
+  if (!isAuthenticated()) {
+    return <Navigate to="/login" state={{ from: location }} />;
+  }
+
+  if (authUserInfo().role != role) {
+    return <h1>You don't have valid role</h1>;
+  }
+
+  return <Outlet />;
+}

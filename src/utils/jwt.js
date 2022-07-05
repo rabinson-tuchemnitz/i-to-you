@@ -24,6 +24,7 @@ export const authUserInfo = () => {
     return {
       name: decodedToken.name,
       email: decodedToken.email,
+      role: decodedToken.role,
     };
   }
   return false;
