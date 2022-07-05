@@ -10,6 +10,7 @@ import {
 import FileProperties from './FileProperties';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import RequestChangeModal from '../Modal/RequestChangeModal';
+import { getFileDetailUrl } from '../../utils/helper';
 
 const DetailBox = ({ file }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -46,7 +47,7 @@ const DetailBox = ({ file }) => {
               <VStack m={2}>
                 <CopyToClipboard
                   onCopy={handleCopyLink}
-                  text={file.download_url}>
+                  text={getFileDetailUrl(file.id)}>
                   <Button
                     size="sm"
                     variant="solid"

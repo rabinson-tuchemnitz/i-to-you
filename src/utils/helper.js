@@ -5,3 +5,7 @@ export const bytesToSize = (bytes) => {
 
   return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
 };
+
+export const getFileDetailUrl = (id) => {
+  return `${window.location.origin.toString()}/file/${id}`;
+};

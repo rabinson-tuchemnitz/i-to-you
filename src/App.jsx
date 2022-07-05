@@ -9,6 +9,7 @@ import RegisterPage from './pages/auth/RegisterPage';
 import UploadedFilesPage from './pages/UploadedFiles';
 import SharedFilesPage from './pages/SharedFiles';
 import PendingRequests from './pages/PendingRequests';
+import FileDetails from './pages/FileDetails';
 
 const App = () => {
   return (
@@ -39,6 +40,7 @@ const App = () => {
           path={siteMap.PendingRequests.path}
           element={<PendingRequests />}
         />
+        <Route path={siteMap.FileDetails.path} element={<FileDetails />} />
         {/* Error Routes */}
         <Route path="*" element={<Page404 />} />
       </Routes>
