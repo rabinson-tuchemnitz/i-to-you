@@ -44,9 +44,15 @@ const RequestChangeModal = ({ isOpen, onClose, file }) => {
           });
         })
         .catch((err) => {
+          var message = 'Something went wrong.';
+          var status = 'error';
+          if (err.response.status === 409) {
+            message = err.response.data.message;
+            status = 'warning';
+          }
           toast({
-            title: 'Something went wrong',
-            status: 'error',
+            title: message,
+            status: status,
             position: 'top-right',
             isClosable: true,
           });
