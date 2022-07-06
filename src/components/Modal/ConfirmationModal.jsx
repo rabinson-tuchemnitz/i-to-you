@@ -27,7 +27,7 @@ const ConfirmationModal = ({
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader p={3}>
-            Confirm {file.action_to == 'block' ? 'blocking' : 'unblocking'}?
+            Confirm {file.status == 'unblocked' ? 'blocking' : 'unblocking'}?
           </AlertDialogHeader>
           <AlertDialogBody>
             <Text fontWeight="bold">{file?.name}</Text>
@@ -38,10 +38,10 @@ const ConfirmationModal = ({
               Cancel
             </Button>
             <Button
-              colorScheme={file.action_to == 'block' ? 'danger' : 'success'}
-              onClick={() => handleConfirmationAction(file.id, file.status)}
+              colorScheme={file.status == 'unblocked' ? 'danger' : 'success'}
+              onClick={() => handleConfirmationAction(file._id, file.status)}
               ml={3}>
-              {file.action_to == 'block' ? 'Block' : 'Unblock'}
+              {file.status == 'unblocked' ? 'Block' : 'Unblock'}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

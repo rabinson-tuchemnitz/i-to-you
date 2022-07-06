@@ -4,6 +4,7 @@ import {
   httpClientInstance,
   httpClientOptionalAuthInstance,
 } from '.';
+import { getItem } from '../utils/storage';
 
 export const getUploadedFiles = async () => {
   return await httpClientAuthInstance.get('/files/uploads');
@@ -25,7 +26,7 @@ export const getPendingRequests = async () => {
 };
 
 export const acceptPendingRequests = async (fileId, data) => {
-  return await httpClientAuthInstance.patch('/files/update/' + fileId);
+  return await httpClientAuthInstance.patch('/files/update/' + fileId, data);
 };
 
 export const rejectPendingRequests = async (fileId) => {

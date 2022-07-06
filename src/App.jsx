@@ -18,6 +18,7 @@ import SharedFilesPage from './pages/SharedFiles';
 import PendingRequests from './pages/PendingRequests';
 import FileDetails from './pages/FileDetails';
 import { authUserInfo, isAuthenticated } from './utils/jwt';
+import Error404 from './components/Error/Error404';
 
 const App = () => {
   return (
@@ -50,13 +51,13 @@ const App = () => {
         </Route>
 
         {/* Admin Routes */}
-        {/* <Route element={<RequiredAuth role="admin" />}> */}
-        <Route
-          exact
-          path={siteMap.PendingRequests.path}
-          element={<PendingRequests />}
-        />
-        {/* </Route> */}
+        <Route element={<RequiredAuth role="admin" />}>
+          <Route
+            exact
+            path={siteMap.PendingRequests.path}
+            element={<PendingRequests />}
+          />
+        </Route>
 
         {/* Error Routes */}
         <Route path="*" element={<Page404 />} />
@@ -74,8 +75,8 @@ function RequiredAuth({ role }) {
     return <Navigate to="/login" state={{ from: location }} />;
   }
 
-  if (authUserInfo().role != role) {
-    return <h1>You don't have valid role</h1>;
+  if (isAuthenticated() && authUserInfo().role != role) {
+    return <Error404 />;
   }
 
   return <Outlet />;

@@ -154,35 +154,39 @@ const PendingRequests = () => {
   const [pendingRequests, setPendingRequest] = useState();
   const [currentRequest, setCurrentRequest] = useState({});
 
-  const handleConfirmationAction = (id, updatedStatus) => {
-    acceptPendingRequests(id, {
-      status: updatedStatus,
-    })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((err) => {
-        console.log(err);
+  const handleConfirmationAction = async (id, currentStatus) => {
+    try {
+      await acceptPendingRequests(id, {
+        status: currentStatus == 'blocked' ? 'unblocked' : 'blocked',
       });
-    console.log(pendingRequests);
-    // // Update the state
-    const newPendingRequests = pendingRequests.filter((data) => data.id != id);
-    setPendingRequest(newPendingRequests);
+      //Show the toast message
+      const toastTitle =
+        currentStatus === 'blocked'
+          ? 'File unblocked successfully'
+          : 'File blocked successfully';
+
+      toast({
+        title: toastTitle,
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      // // Update the state
+      const newPendingRequests = pendingRequests.filter(
+        (data) => data._id != id,
+      );
+      setPendingRequest(newPendingRequests);
+    } catch (err) {
+      toast({
+        title: 'Failed to accept the request',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+
     // //Close the modal
     onConfirmationClose();
-
-    //Show the toast message
-    const toastTitle =
-      updatedStatus === 'blocked'
-        ? 'File unblocked successfully'
-        : 'File blocked successfully';
-
-    toast({
-      title: toastTitle,
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
   };
 
   const handleCancelRequest = async (fileId) => {
@@ -204,13 +208,11 @@ const PendingRequests = () => {
     }
   };
   const handleOnActionBtnClicked = (request) => {
-    console.log(request);
     setCurrentRequest(request);
     onConfirmationOpen();
   };
 
   const handleViewBtnClicked = (request) => {
-    console.log(request);
     setCurrentRequest(request);
     onReasonsOpen();
   };
@@ -219,7 +221,6 @@ const PendingRequests = () => {
     try {
       getPendingRequests()
         .then((response) => {
-          console.log(response.data.data);
           setPendingRequest(response.data.data);
         })
         .catch((err) => {
@@ -234,7 +235,12 @@ const PendingRequests = () => {
           setIsLoading(false);
         });
     } catch (err) {
-      console.log(err);
+      toast({
+        title: 'Something went wrong',
+        status: 'error',
+        position: 'top-right',
+        isClosable: true,
+      });
     }
   }, []);
 
@@ -287,10 +293,10 @@ const PendingRequests = () => {
                         size="sm"
                         variant="solid"
                         colorScheme={
-                          request.action_to == 'block' ? 'danger' : 'success'
+                          request.status == 'unblocked' ? 'danger' : 'success'
                         }
                         w="100%">
-                        {request.action_to == 'block' ? 'Block' : 'Unblock'}
+                        {request.status == 'unblocked' ? 'Block' : 'Unblock'}
                       </Button>
                     </HStack>
                   </VStack>
@@ -335,12 +341,12 @@ const PendingRequests = () => {
                               size="sm"
                               variant="solid"
                               colorScheme={
-                                request.action_to == 'block'
+                                request.status == 'unblocked'
                                   ? 'danger'
                                   : 'success'
                               }
                               w="100%">
-                              {request.action_to == 'block'
+                              {request.status == 'unblocked'
                                 ? 'Block'
                                 : 'Unblock'}
                             </Button>
