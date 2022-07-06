@@ -11,12 +11,13 @@ import FileProperties from './FileProperties';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import RequestChangeModal from '../Modal/RequestChangeModal';
 import { getFileDetailUrl } from '../../utils/helper';
+import FileDownload from 'js-file-download';
+import { downloadFile } from '../../apis/file';
 
 const DetailBox = ({ file }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const isBlocked = file && file.status == 'blocked';
   const toast = useToast();
-
   const handleCopyLink = () => {
     toast({
       title: 'Download link copied!',
@@ -24,6 +25,26 @@ const DetailBox = ({ file }) => {
       position: 'top-right',
       isClosable: true,
     });
+  };
+
+  const handleDownload = async (downloadUrl, fileName) => {
+    try {
+      const response = await downloadFile(downloadUrl);
+      FileDownload(response.data, fileName);
+      toast({
+        title: 'Download has started',
+        status: 'success',
+        position: 'top-right',
+        isClosable: true,
+      });
+    } catch (err) {
+      toast({
+        title: 'Failed to download',
+        status: 'error',
+        position: 'top-right',
+        isClosable: true,
+      });
+    }
   };
 
   return (
@@ -58,6 +79,7 @@ const DetailBox = ({ file }) => {
                 </CopyToClipboard>
 
                 <Button
+                  onClick={() => handleDownload(file.download_url, file.name)}
                   size="sm"
                   variant="solid"
                   colorScheme="secondary"

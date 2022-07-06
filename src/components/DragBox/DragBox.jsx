@@ -19,6 +19,8 @@ import { Dropzone, FileItem } from '@dropzone-ui/react';
 import { bytesToSize, getFileDetailUrl } from '../../utils/helper';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { IoCopyOutline, IoEyeOutline } from 'react-icons/io5';
+import { isAuthenticated } from '../../utils/jwt';
+import { getItem } from '../../utils/storage';
 
 const DragBox = () => {
   const toast = useToast();
@@ -38,6 +40,7 @@ const DragBox = () => {
   const handleDelete = (id) => {
     setFiles(files.filter((x) => x.id !== id));
   };
+
   const handleCopyLink = () => {
     toast({
       title: 'Download link copied!',
@@ -46,6 +49,14 @@ const DragBox = () => {
       isClosable: true,
     });
   };
+
+  var headers = {
+    'content-type': 'multipart/form-data',
+  };
+
+  if (isAuthenticated()) {
+    headers['Authorization'] = 'Bearer ' + getItem('token');
+  }
   return (
     <VStack>
       <Dropzone
@@ -60,8 +71,7 @@ const DragBox = () => {
         method={'POST'}
         config={{
           headers: {
-            // Authorization: 'Bearer YOUR_BEARER_TOKEN_GOES_HERE',
-            'content-type': 'multipart/form-data',
+            ...headers,
           },
         }}
         color={'#88C0D0'}
@@ -96,7 +106,7 @@ const DragBox = () => {
             {uploadedFiles.map((item, index) => {
               const response = item.serverResponse.payload.uploaded_files[0];
               return (
-                <Tr>
+                <Tr key={response.id}>
                   <Td>
                     <Text>{index + 1}</Text>
                   </Td>
