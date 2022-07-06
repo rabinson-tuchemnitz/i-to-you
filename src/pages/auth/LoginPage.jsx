@@ -18,7 +18,7 @@ import { loginUser } from '../../apis/auth';
 import { useForm } from 'react-hook-form';
 
 import AuthLayout from '../../components/Layout/AuthLayout';
-import { setItem } from '../../utils/storage';
+import { removeItem, setItem } from '../../utils/storage';
 
 const LoginPage = () => {
   let navigate = useNavigate();
@@ -36,6 +36,8 @@ const LoginPage = () => {
   const onSubmit = async (data) => {
     try {
       const response = await loginUser(data);
+      console.log(response.data.token);
+      removeItem('token');
       setItem('token', response.data.token);
       navigate('/');
       toast({
