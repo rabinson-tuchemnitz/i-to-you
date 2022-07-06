@@ -11,8 +11,9 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  useToast,
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { IoMenu, IoClose } from 'react-icons/io5';
 import { siteMap } from '../../routes';
 import { authUserInfo, isAuthenticated } from '../../utils/jwt';
@@ -22,10 +23,18 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 
 const Nav = () => {
   const [display, changeDisplay] = useState('none');
+  let navigate = useNavigate();
+  const toast = useToast();
 
   const handleLogout = () => {
     removeItem('token');
-    console.log('removed');
+    navigate('/');
+    toast({
+      title: 'Loggout in successfully',
+      status: 'success',
+      position: 'top-right',
+      isClosable: true,
+    });
   };
   return (
     <Flex>
