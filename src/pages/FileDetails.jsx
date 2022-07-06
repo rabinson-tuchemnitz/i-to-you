@@ -164,7 +164,7 @@ const FileDetails = () => {
                     <FileProperties file={file} />
                   </Box>
                   <br />
-                  <VStack alignSelf={'flex-start'} w="80%">
+                  <VStack alignSelf={'flex-start'} minW="14rem">
                     <Button
                       onClick={() =>
                         handleDownload(file.download_path, file.name)
@@ -190,124 +190,126 @@ const FileDetails = () => {
                   </VStack>
                 </VStack>
               </Box>
-              <Box flexGrow={1.75} m={2}>
-                <VStack as="form" onSubmit={handleSubmit(onSubmit)}>
-                  <Box alignSelf="flex-start" w="100%">
-                    <Heading size="md">
-                      Request to {isBlocked ? 'unblock' : 'block'}
-                    </Heading>
-                    <br />
-                    <VStack w="100%">
-                      <FormControl>
-                        <FormLabel htmlFor="name">Name</FormLabel>
-                        {isAuthenticated() ? (
-                          <Input
-                            readOnly={true}
-                            value={authUserInfo().name}
-                            {...register('name', {
-                              required: 'This is requried',
-                            })}
-                          />
-                        ) : (
-                          <>
+              {isAuthenticated() && authUserInfo().role == 'admin' ? null : (
+                <Box flexGrow={1.75} m={2}>
+                  <VStack as="form" onSubmit={handleSubmit(onSubmit)}>
+                    <Box alignSelf="flex-start" w="100%">
+                      <Heading size="md">
+                        Request to {isBlocked ? 'unblock' : 'block'}
+                      </Heading>
+                      <br />
+                      <VStack w="100%">
+                        <FormControl>
+                          <FormLabel htmlFor="name">Name</FormLabel>
+                          {isAuthenticated() ? (
                             <Input
-                              id="name"
-                              type="string"
-                              placeholder="Enter your name"
-                              isInvalid={errors.name}
-                              focusBorderColor="default.400"
-                              errorBorderColor="danger.400"
+                              readOnly={true}
+                              value={authUserInfo().name}
                               {...register('name', {
-                                required: 'This is required',
-                                minLength: {
-                                  value: 4,
-                                  message: 'Minimum length should be 4',
-                                },
+                                required: 'This is requried',
                               })}
                             />
-                            <FormErrorMessage>
-                              {errors.name && errors.email.name}
-                            </FormErrorMessage>
-                          </>
-                        )}
-                      </FormControl>
-                      <FormControl>
-                        <FormLabel htmlFor="email">Email</FormLabel>
-                        {isAuthenticated() ? (
-                          <Input
-                            readOnly={true}
-                            value={authUserInfo().email}
-                            {...register('email', {
-                              required: 'This is requried',
+                          ) : (
+                            <>
+                              <Input
+                                id="name"
+                                type="string"
+                                placeholder="Enter your name"
+                                isInvalid={errors.name}
+                                focusBorderColor="default.400"
+                                errorBorderColor="danger.400"
+                                {...register('name', {
+                                  required: 'This is required',
+                                  minLength: {
+                                    value: 4,
+                                    message: 'Minimum length should be 4',
+                                  },
+                                })}
+                              />
+                              <FormErrorMessage>
+                                {errors.name && errors.email.name}
+                              </FormErrorMessage>
+                            </>
+                          )}
+                        </FormControl>
+                        <FormControl>
+                          <FormLabel htmlFor="email">Email</FormLabel>
+                          {isAuthenticated() ? (
+                            <Input
+                              readOnly={true}
+                              value={authUserInfo().email}
+                              {...register('email', {
+                                required: 'This is requried',
+                              })}
+                            />
+                          ) : (
+                            <>
+                              <Input
+                                id="email"
+                                type="email"
+                                placeholder="Enter your email address"
+                                isInvalid={errors.email}
+                                focusBorderColor="default.400"
+                                errorBorderColor="danger.400"
+                                isDisabled={isAuthenticated()}
+                                {...register('email', {
+                                  required: 'This is required',
+                                  minLength: {
+                                    value: 4,
+                                    message: 'Minimum length should be 4',
+                                  },
+                                })}
+                              />
+                              <FormErrorMessage>
+                                {errors.email && errors.email.message}
+                              </FormErrorMessage>
+                            </>
+                          )}
+                        </FormControl>
+                        <FormControl isInvalid={errors.reason}>
+                          <FormLabel htmlFor="reason">Reason</FormLabel>
+                          <Textarea
+                            id="reason"
+                            size="md"
+                            rows={6}
+                            isInvalid={errors.reason}
+                            placeholder="Reason for the request"
+                            {...register('reason', {
+                              required: 'This is required',
+                              minLength: {
+                                value: 15,
+                                message: 'Minimum length should be 15',
+                              },
                             })}
                           />
-                        ) : (
-                          <>
-                            <Input
-                              id="email"
-                              type="email"
-                              placeholder="Enter your email address"
-                              isInvalid={errors.email}
-                              focusBorderColor="default.400"
-                              errorBorderColor="danger.400"
-                              isDisabled={isAuthenticated()}
-                              {...register('email', {
-                                required: 'This is required',
-                                minLength: {
-                                  value: 4,
-                                  message: 'Minimum length should be 4',
-                                },
-                              })}
-                            />
-                            <FormErrorMessage>
-                              {errors.email && errors.email.message}
-                            </FormErrorMessage>
-                          </>
-                        )}
-                      </FormControl>
-                      <FormControl isInvalid={errors.reason}>
-                        <FormLabel htmlFor="reason">Reason</FormLabel>
-                        <Textarea
-                          id="reason"
-                          size="md"
-                          rows={6}
-                          isInvalid={errors.reason}
-                          placeholder="Reason for the request"
-                          {...register('reason', {
-                            required: 'This is required',
-                            minLength: {
-                              value: 15,
-                              message: 'Minimum length should be 15',
-                            },
-                          })}
-                        />
-                        <FormErrorMessage>
-                          {errors.reason && errors.reason.message}
-                        </FormErrorMessage>
-                      </FormControl>
-                      <FormControl>
-                        <Input
-                          value={
-                            file.status == 'blocked' ? 'unblocked' : 'blocked'
-                          }
-                          hidden={true}
-                          {...register('action')}
-                        />
-                      </FormControl>
-                    </VStack>
-                    <Box>
-                      <Button
-                        float="right"
-                        type="submit"
-                        isLoading={isSubmitting}
-                        variant="solid"
-                        colorScheme={isBlocked ? 'success' : 'danger'}>
-                        {isBlocked ? 'Unblock' : 'Block'}
-                      </Button>
+                          <FormErrorMessage>
+                            {errors.reason && errors.reason.message}
+                          </FormErrorMessage>
+                        </FormControl>
+                        <FormControl>
+                          <Input
+                            value={
+                              file.status == 'blocked' ? 'unblocked' : 'blocked'
+                            }
+                            hidden={true}
+                            {...register('action')}
+                          />
+                        </FormControl>
+                      </VStack>
+                      <Box>
+                        <Button
+                          float="right"
+                          type="submit"
+                          isLoading={isSubmitting}
+                          variant="solid"
+                          colorScheme={isBlocked ? 'success' : 'danger'}>
+                          {isBlocked ? 'Unblock' : 'Block'}
+                        </Button>
+                      </Box>
                     </Box>
-                  </Box>
-                </VStack>
-              </Box>
+                  </VStack>
+                </Box>
+              )}
             </Flex>
           </Flex>
         )}
