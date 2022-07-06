@@ -72,6 +72,10 @@ const UploadedFilesPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const toast = useToast();
 
+  const handleRefreshFile = () => {
+    setIsLoading(true);
+  };
+
   const handleFileSelection = (id) => {
     let selectedItem = fileData?.find((item) => {
       return item.id == id;
@@ -98,9 +102,10 @@ const UploadedFilesPage = () => {
         });
       })
       .finally(() => {
+        setSelectedFile(null);
         setIsLoading(false);
       });
-  }, []);
+  }, [isLoading]);
 
   return (
     <MainLayout>
@@ -130,7 +135,10 @@ const UploadedFilesPage = () => {
               borderColor="light.400"
               borderRadius="12px"
               boxShadow="4px 4px 15px rgba(236, 239, 244, 1)">
-              <DetailBox file={selectedFile} />
+              <DetailBox
+                file={selectedFile}
+                handleRefreshFile={handleRefreshFile}
+              />
             </Flex>
 
             {/* Drawer detail box from mobile view */}
@@ -145,7 +153,10 @@ const UploadedFilesPage = () => {
                 <br />
                 <br />
                 <DrawerBody>
-                  <DetailBox file={selectedFile} />
+                  <DetailBox
+                    file={selectedFile}
+                    handleRefreshFile={handleRefreshFile}
+                  />
                 </DrawerBody>
               </DrawerContent>
             </Drawer>

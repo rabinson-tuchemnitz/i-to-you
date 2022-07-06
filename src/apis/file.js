@@ -13,6 +13,10 @@ export const getFileDetail = async (id) => {
   return await httpClientInstance.get('/files/' + id);
 };
 
+export const deleteFile = async (id) => {
+  return await httpClientAuthInstance.delete('/files/' + id);
+};
+
 export const requestFileChange = async (id, data) => {
   return await httpClientOptionalAuthInstance.post(
     '/files/change-request/' + id,

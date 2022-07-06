@@ -12,9 +12,9 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import RequestChangeModal from '../Modal/RequestChangeModal';
 import { getFileDetailUrl } from '../../utils/helper';
 import FileDownload from 'js-file-download';
-import { downloadFile } from '../../apis/file';
+import { deleteFile, downloadFile } from '../../apis/file';
 
-const DetailBox = ({ file }) => {
+const DetailBox = ({ file, handleRefreshFile }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const isBlocked = file && file.status == 'blocked';
   const toast = useToast();
@@ -40,6 +40,26 @@ const DetailBox = ({ file }) => {
     } catch (err) {
       toast({
         title: 'Failed to download',
+        status: 'error',
+        position: 'top-right',
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleDeleteFile = async (fileId) => {
+    try {
+      await deleteFile(fileId);
+      handleRefreshFile();
+      toast({
+        title: 'File deleted successfully.',
+        status: 'success',
+        position: 'top-right',
+        isClosable: true,
+      });
+    } catch (err) {
+      toast({
+        title: 'Failed to delete file',
         status: 'error',
         position: 'top-right',
         isClosable: true,
@@ -91,7 +111,7 @@ const DetailBox = ({ file }) => {
             <br />
             {/* Transfer Actions */}
             <Flex flexDir="column" w="100%">
-              <Text fontWeight="bold">Request</Text>
+              <Text fontWeight="bold">Actions</Text>
               <VStack m={2}>
                 {/* <Textarea isInvalid placeholder="Proper reason for request" /> */}
                 <Button
@@ -102,6 +122,14 @@ const DetailBox = ({ file }) => {
                   onClick={onOpen}
                   onClose={onClose}>
                   {isBlocked ? 'Request to Unblock' : 'Request to Block'}
+                </Button>
+                <Button
+                  onClick={() => handleDeleteFile(file.id)}
+                  size="sm"
+                  variant="solid"
+                  colorScheme="warning"
+                  w="100%">
+                  Delete
                 </Button>
 
                 {/* Form to request blocking or unblocking */}
