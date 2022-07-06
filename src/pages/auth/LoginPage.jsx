@@ -36,7 +36,6 @@ const LoginPage = () => {
   const onSubmit = async (data) => {
     try {
       const response = await loginUser(data);
-      console.log(response.data.token);
       removeItem('token');
       setItem('token', response.data.token);
       navigate('/');

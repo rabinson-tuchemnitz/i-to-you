@@ -1,12 +1,9 @@
-import axios from 'axios';
 import {
   httpClientAuthInstance,
   httpClientBlobOptionalAuthInstance,
   httpClientInstance,
   httpClientOptionalAuthInstance,
 } from '.';
-import { isAuthenticated } from '../utils/jwt';
-import { getItem } from '../utils/storage';
 
 export const getUploadedFiles = async () => {
   return await httpClientAuthInstance.get('/files/uploads');

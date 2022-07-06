@@ -110,7 +110,6 @@ const FileDetails = () => {
     try {
       getFileDetail(file_id)
         .then((response) => {
-          console.log(response.data);
           setFile(response.data.data);
           setIsFound(true);
         })
