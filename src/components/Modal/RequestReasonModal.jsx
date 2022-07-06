@@ -32,15 +32,15 @@ const RequestReasonModal = ({ reasons, isReasonsOpen, onReasonsClose }) => {
         <ModalCloseButton />
         <ModalBody>
           <Accordion defaultIndex={[0]}>
-            {reasons?.owner.length > 0 && (
+            {reasons?.owner && (
               <AccordionItem>
                 <h2>
                   <AccordionButton>
                     <Box flex="1" textAlign="left">
                       <HStack>
                         <Text>{reasons.owner.createdAt}</Text>
-                        <Badge bgColor="secondary.500" color="white">
-                          User
+                        <Badge bgColor="primary.500" color="white">
+                          Owner
                         </Badge>
                       </HStack>
                     </Box>
