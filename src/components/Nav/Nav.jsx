@@ -47,6 +47,11 @@ const Nav = () => {
             <Link to={siteMap.UploadedFiles.path}>
               <Text>My Files</Text>
             </Link>
+            {authUserInfo().role == 'admin' && (
+              <Link to={siteMap.PendingRequests.path}>
+                <Text>Pending Requests</Text>
+              </Link>
+            )}
             <Menu>
               <MenuButton>
                 {authUserInfo().name} <ChevronDownIcon />

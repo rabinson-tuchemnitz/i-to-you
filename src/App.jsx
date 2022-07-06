@@ -50,13 +50,13 @@ const App = () => {
         </Route>
 
         {/* Admin Routes */}
-        <Route element={<RequiredAuth role="admin" />}>
-          <Route
-            exact
-            path={siteMap.PendingRequests.path}
-            element={<PendingRequests />}
-          />
-        </Route>
+        {/* <Route element={<RequiredAuth role="admin" />}> */}
+        <Route
+          exact
+          path={siteMap.PendingRequests.path}
+          element={<PendingRequests />}
+        />
+        {/* </Route> */}
 
         {/* Error Routes */}
         <Route path="*" element={<Page404 />} />

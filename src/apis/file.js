@@ -19,3 +19,15 @@ export const requestFileChange = async (id, data) => {
     data,
   );
 };
+
+export const getPendingRequests = async () => {
+  return await httpClientAuthInstance.get('/files/pending-requests');
+};
+
+export const acceptPendingRequests = async (fileId, data) => {
+  return await httpClientAuthInstance.patch('/files/update/' + fileId);
+};
+
+export const rejectPendingRequests = async (fileId) => {
+  return await httpClientAuthInstance.delete('/files/change-request/' + fileId);
+};

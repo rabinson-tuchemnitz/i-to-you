@@ -4,7 +4,9 @@ import {
   Flex,
   Heading,
   HStack,
+  IconButton,
   SimpleGrid,
+  Spinner,
   Table,
   TableContainer,
   Tbody,
@@ -17,10 +19,17 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import {
+  acceptPendingRequests,
+  getPendingRequests,
+  rejectPendingRequests,
+} from '../apis/file';
 import MainLayout from '../components/Layout/MainLayout';
 import ConfirmationModal from '../components/Modal/ConfirmationModal';
 import RequestReasonModal from '../components/Modal/RequestReasonModal';
+import { bytesToSize } from '../utils/helper';
+import { IoTrashOutline } from 'react-icons/io5';
 
 const requests = [
   {
@@ -128,6 +137,9 @@ const requests = [
 ];
 
 const PendingRequests = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const toast = useToast();
+
   const {
     isOpen: isConfirmationOpen,
     onOpen: onConfirmationOpen,
@@ -139,11 +151,19 @@ const PendingRequests = () => {
     onOpen: onReasonsOpen,
     onClose: onReasonsClose,
   } = useDisclosure();
-  const [pendingRequests, setPendingRequest] = useState(requests);
+  const [pendingRequests, setPendingRequest] = useState();
   const [currentRequest, setCurrentRequest] = useState({});
-  const toast = useToast();
 
   const handleConfirmationAction = (id, updatedStatus) => {
+    acceptPendingRequests(id, {
+      status: updatedStatus,
+    })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     console.log(pendingRequests);
     // // Update the state
     const newPendingRequests = pendingRequests.filter((data) => data.id != id);
@@ -165,15 +185,58 @@ const PendingRequests = () => {
     });
   };
 
+  const handleCancelRequest = async (fileId) => {
+    try {
+      await rejectPendingRequests(fileId);
+      toast({
+        title: 'Pending request deleted successfully.',
+        status: 'success',
+        position: 'top-right',
+        isClosable: true,
+      });
+    } catch (err) {
+      toast({
+        title: 'Something went wrong',
+        status: 'error',
+        position: 'top-right',
+        isClosable: true,
+      });
+    }
+  };
   const handleOnActionBtnClicked = (request) => {
+    console.log(request);
     setCurrentRequest(request);
     onConfirmationOpen();
   };
 
   const handleViewBtnClicked = (request) => {
+    console.log(request);
     setCurrentRequest(request);
     onReasonsOpen();
   };
+
+  useEffect(() => {
+    try {
+      getPendingRequests()
+        .then((response) => {
+          console.log(response.data.data);
+          setPendingRequest(response.data.data);
+        })
+        .catch((err) => {
+          toast({
+            title: 'Something went wrong',
+            position: 'top-right',
+            isClosable: true,
+            status: 'error',
+          });
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
 
   return (
     <MainLayout>
@@ -185,124 +248,135 @@ const PendingRequests = () => {
         borderRadius="12px"
         boxShadow="4px 4px 15px rgba(236, 239, 244, 1)"
         p={3}>
-        <Flex flexDir="column" w="100%" p={2}>
-          <Heading as="h2" size="md">
-            Pending Requests
-          </Heading>
-          <Divider mb={2} />
+        {isLoading && <Spinner />}
+        {!isLoading && (
+          <Flex flexDir="column" w="100%" p={2}>
+            <Heading as="h2" size="md">
+              Pending Requests
+            </Heading>
+            <Divider mb={2} />
 
-          {/* For Mobile View */}
-          <SimpleGrid
-            columns={[1, 2]}
-            spacing={5}
-            display={['grid', 'grid', 'none']}>
-            {pendingRequests.map((request) => {
-              return (
-                <VStack
-                  key={request.id}
-                  order="1px solid"
-                  borderColor="default"
-                  p={3}>
-                  <Heading size="md">{request.name}</Heading>
-                  <Text>Type: {request.type}</Text>
-                  <Text>Size: {request.size}</Text>
-                  <HStack w="100%">
-                    <Button
-                      onClick={() => handleViewBtnClicked(request)}
-                      size="sm"
-                      w="100%"
-                      colorScheme="default">
-                      View (
-                      {(request.reasons.owner ? 1 : 0) +
-                        request.reasons.users.length}
-                      )
-                    </Button>
-                    <Button
-                      onClick={() => handleOnActionBtnClicked(request)}
-                      size="sm"
-                      variant="solid"
-                      colorScheme={
-                        request.action_to == 'block' ? 'danger' : 'success'
-                      }
-                      w="100%">
-                      {request.action_to == 'block' ? 'Block' : 'Unblock'}
-                    </Button>
-                  </HStack>
-                </VStack>
-              );
-            })}
-          </SimpleGrid>
+            {/* For Mobile View */}
+            <SimpleGrid
+              columns={[1, 2]}
+              spacing={5}
+              display={['grid', 'grid', 'none']}>
+              {pendingRequests.map((request) => {
+                return (
+                  <VStack
+                    key={request._id}
+                    order="1px solid"
+                    borderColor="default"
+                    p={3}>
+                    <Heading size="md">{request.name}</Heading>
+                    <Text>Type: {request.type}</Text>
+                    <Text>Size: {bytesToSize(request.size_in_bytes)}</Text>
+                    <HStack w="100%">
+                      <Button
+                        onClick={() => handleViewBtnClicked(request)}
+                        size="sm"
+                        w="100%"
+                        colorScheme="default">
+                        View (
+                        {(request.reasons.owner ? 1 : 0) +
+                          request.reasons.users.length}
+                        )
+                      </Button>
+                      <Button
+                        onClick={() => handleOnActionBtnClicked(request)}
+                        size="sm"
+                        variant="solid"
+                        colorScheme={
+                          request.action_to == 'block' ? 'danger' : 'success'
+                        }
+                        w="100%">
+                        {request.action_to == 'block' ? 'Block' : 'Unblock'}
+                      </Button>
+                    </HStack>
+                  </VStack>
+                );
+              })}
+            </SimpleGrid>
 
-          {/* For Desktop View */}
-          <TableContainer display={['none', 'none', 'flex']}>
-            <Table variant="striped" colorScheme="default">
-              <Thead>
-                <Tr>
-                  <Th>S.No</Th>
-                  <Th>Name</Th>
-                  <Th>Type</Th>
-                  <Th>Size</Th>
-                  <Th>Actions</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {pendingRequests.map((request, index) => {
-                  return (
-                    <Tr key={request.id}>
-                      <Td>{index + 1}</Td>
-                      <Td>{request.name}</Td>
-                      <Td>{request.type}</Td>
-                      <Td>{request.size}</Td>
-                      <Td>
-                        <HStack w="100%">
-                          <Button
-                            onClick={() => handleViewBtnClicked(request)}
-                            size="sm"
-                            w="100%"
-                            colorScheme="default">
-                            View (
-                            {(request.reasons.owner ? 1 : 0) +
-                              request.reasons.users.length}
-                            )
-                          </Button>
-                          <Button
-                            onClick={() => handleOnActionBtnClicked(request)}
-                            size="sm"
-                            variant="solid"
-                            colorScheme={
-                              request.action_to == 'block'
-                                ? 'danger'
-                                : 'success'
-                            }
-                            w="100%">
-                            {request.action_to == 'block' ? 'Block' : 'Unblock'}
-                          </Button>
-                        </HStack>
-                      </Td>
-                    </Tr>
-                  );
-                })}
-              </Tbody>
-            </Table>
-          </TableContainer>
+            {/* For Desktop View */}
+            <TableContainer display={['none', 'none', 'flex']}>
+              <Table variant="striped" colorScheme="default">
+                <Thead>
+                  <Tr>
+                    <Th>S.No</Th>
+                    <Th>Name</Th>
+                    <Th>Type</Th>
+                    <Th>Size</Th>
+                    <Th>Actions</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {pendingRequests.map((request, index) => {
+                    return (
+                      <Tr key={request._id}>
+                        <Td>{index + 1}</Td>
+                        <Td>{request.name}</Td>
+                        <Td>{request.type}</Td>
+                        <Td>{bytesToSize(request.size_in_bytes)}</Td>
+                        <Td>
+                          <HStack w="100%">
+                            <Button
+                              onClick={() => handleViewBtnClicked(request)}
+                              size="sm"
+                              w="100%"
+                              colorScheme="default">
+                              View (
+                              {(request.reasons.owner ? 1 : 0) +
+                                request.reasons.users.length}
+                              )
+                            </Button>
+                            <Button
+                              onClick={() => handleOnActionBtnClicked(request)}
+                              size="sm"
+                              variant="solid"
+                              colorScheme={
+                                request.action_to == 'block'
+                                  ? 'danger'
+                                  : 'success'
+                              }
+                              w="100%">
+                              {request.action_to == 'block'
+                                ? 'Block'
+                                : 'Unblock'}
+                            </Button>
+                            <IconButton
+                              onClick={() => handleCancelRequest(request._id)}
+                              colorScheme="warning"
+                              aria-label="Search database"
+                              icon={<IoTrashOutline />}
+                            />
+                          </HStack>
+                        </Td>
+                      </Tr>
+                    );
+                  })}
+                </Tbody>
+              </Table>
+            </TableContainer>
 
-          {/* Alert confirmation modal */}
-          <ConfirmationModal
-            isOpen={isConfirmationOpen}
-            onClose={onConfirmationClose}
-            file={currentRequest}
-            handleConfirmationAction={handleConfirmationAction}
-          />
-
-          {/* Reasons List modal */}
-          {currentRequest && (
-            <RequestReasonModal
-              reasons={currentRequest.reasons}
-              isReasonsOpen={isReasonsOpen}
-              onReasonsClose={onReasonsClose}
+            {/* Alert confirmation modal */}
+            <ConfirmationModal
+              isOpen={isConfirmationOpen}
+              onClose={onConfirmationClose}
+              file={currentRequest}
+              handleConfirmationAction={handleConfirmationAction}
             />
-          )}
-        </Flex>
+
+            {/* Reasons List modal */}
+            {currentRequest && (
+              <RequestReasonModal
+                reasons={currentRequest.reasons}
+                isReasonsOpen={isReasonsOpen}
+                onReasonsClose={onReasonsClose}
+              />
+            )}
+          </Flex>
+        )}
       </Flex>
     </MainLayout>
   );
