@@ -70,13 +70,15 @@ export const httpClientMultipartAuthInstance = httpClient({
   ],
 });
 
-export const httpClientBlobAuthInstance = httpClient({
+export const httpClientBlobOptionalAuthInstance = httpClient({
   responseType: 'blob',
   transformRequest: [
     (data, headers) => {
       headers['Accept'] = 'application/json';
       headers['Content-Type'] = 'multipart/form-data';
-      headers['Authorization'] = `Bearer ${getItem('token')}`;
+      if (isAuthenticated()) {
+        headers['Authorization'] = `Bearer ${getItem('token')}`;
+      }
 
       return convertJsonToFormData(data);
     },

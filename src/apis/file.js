@@ -1,9 +1,11 @@
 import axios from 'axios';
 import {
   httpClientAuthInstance,
+  httpClientBlobOptionalAuthInstance,
   httpClientInstance,
   httpClientOptionalAuthInstance,
 } from '.';
+import { isAuthenticated } from '../utils/jwt';
 import { getItem } from '../utils/storage';
 
 export const getUploadedFiles = async () => {
@@ -34,4 +36,10 @@ export const acceptPendingRequests = async (fileId, data) => {
 
 export const rejectPendingRequests = async (fileId) => {
   return await httpClientAuthInstance.delete('/files/change-request/' + fileId);
+};
+
+export const downloadFile = async (downloadPath) => {
+  return await httpClientBlobOptionalAuthInstance.get(
+    '/files/download/' + downloadPath,
+  );
 };

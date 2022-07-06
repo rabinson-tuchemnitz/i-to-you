@@ -10,12 +10,7 @@ import {
   FormErrorMessage,
   FormLabel,
   Heading,
-  HStack,
   Input,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
   Spinner,
   Textarea,
   useToast,
@@ -23,13 +18,14 @@ import {
 } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { getFileDetail, requestFileChange } from '../apis/file';
+import { downloadFile, getFileDetail, requestFileChange } from '../apis/file';
 import FileProperties from '../components/File/FileProperties';
 import MainLayout from '../components/Layout/MainLayout';
 import Error404 from '../components/Error/Error404';
 import { authUserInfo, isAuthenticated } from '../utils/jwt';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { getFileDetailUrl } from '../utils/helper';
+import FileDownload from 'js-file-download';
 
 const FileDetails = () => {
   const { file_id } = useParams();
@@ -90,10 +86,31 @@ const FileDetails = () => {
     });
   };
 
+  const handleDownload = async (downloadUrl, fileName) => {
+    try {
+      const response = await downloadFile(downloadUrl);
+      FileDownload(response.data, fileName);
+      toast({
+        title: 'Download has started',
+        status: 'success',
+        position: 'top-right',
+        isClosable: true,
+      });
+    } catch (err) {
+      toast({
+        title: 'Failed to download',
+        status: 'error',
+        position: 'top-right',
+        isClosable: true,
+      });
+    }
+  };
+
   useEffect(() => {
     try {
       getFileDetail(file_id)
         .then((response) => {
+          console.log(response.data);
           setFile(response.data.data);
           setIsFound(true);
         })
@@ -150,6 +167,9 @@ const FileDetails = () => {
                   <br />
                   <VStack alignSelf={'flex-start'} w="80%">
                     <Button
+                      onClick={() =>
+                        handleDownload(file.download_path, file.name)
+                      }
                       size="sm"
                       variant="solid"
                       colorScheme="secondary"
