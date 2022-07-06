@@ -298,6 +298,12 @@ const PendingRequests = () => {
                         w="100%">
                         {request.status == 'unblocked' ? 'Block' : 'Unblock'}
                       </Button>
+                      <IconButton
+                        onClick={() => handleCancelRequest(request._id)}
+                        colorScheme="warning"
+                        aria-label="Search database"
+                        icon={<IoTrashOutline />}
+                      />
                     </HStack>
                   </VStack>
                 );
