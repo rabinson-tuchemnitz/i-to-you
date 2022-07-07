@@ -44,3 +44,9 @@ export const downloadFile = async (downloadPath) => {
     '/files/download/' + downloadPath,
   );
 };
+
+export const checkStatus = async (fileId) => {
+  return await httpClientAuthInstance.get(
+    '/files/check-block-status/' + fileId,
+  );
+};

@@ -22,6 +22,7 @@ import {
 import { useState, useEffect } from 'react';
 import {
   acceptPendingRequests,
+  checkStatus,
   getPendingRequests,
   rejectPendingRequests,
 } from '../apis/file';
@@ -29,7 +30,7 @@ import MainLayout from '../components/Layout/MainLayout';
 import ConfirmationModal from '../components/Modal/ConfirmationModal';
 import RequestReasonModal from '../components/Modal/RequestReasonModal';
 import { bytesToSize } from '../utils/helper';
-import { IoTrashOutline } from 'react-icons/io5';
+import { IoTrashOutline, IoShieldCheckmark } from 'react-icons/io5';
 
 const requests = [
   {
@@ -139,7 +140,9 @@ const requests = [
 const PendingRequests = () => {
   const [isLoading, setIsLoading] = useState(true);
   const toast = useToast();
-
+  const [isChecking, setIsChecking] = useState(false);
+  const [isResponding, setIsResponding] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const {
     isOpen: isConfirmationOpen,
     onOpen: onConfirmationOpen,
@@ -156,6 +159,7 @@ const PendingRequests = () => {
 
   const handleConfirmationAction = async (id, currentStatus) => {
     try {
+      setIsResponding(true);
       const response = await acceptPendingRequests(id, {
         status: currentStatus == 'blocked' ? 'unblocked' : 'blocked',
       });
@@ -187,12 +191,13 @@ const PendingRequests = () => {
         isClosable: true,
       });
     }
-
+    setIsResponding(false);
     // //Close the modal
     onConfirmationClose();
   };
 
   const handleCancelRequest = async (fileId) => {
+    setIsDeleting(true);
     try {
       await rejectPendingRequests(fileId);
       toast({
@@ -209,12 +214,35 @@ const PendingRequests = () => {
         isClosable: true,
       });
     }
+    setIsDeleting(false);
   };
   const handleOnActionBtnClicked = (request) => {
     setCurrentRequest(request);
     onConfirmationOpen();
   };
 
+  const handleCheckStatus = async (fileId) => {
+    setIsChecking(true);
+    try {
+      const response = await checkStatus(fileId);
+      toast({
+        title: response.data.message,
+        position: 'top-right',
+        status: 'info',
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (err) {
+      toast({
+        title: 'Something went wrong.',
+        position: 'top-right',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+    setIsChecking(false);
+  };
   const handleViewBtnClicked = (request) => {
     setCurrentRequest(request);
     onReasonsOpen();
@@ -294,6 +322,7 @@ const PendingRequests = () => {
                       <Button
                         onClick={() => handleOnActionBtnClicked(request)}
                         size="sm"
+                        isLoading={isResponding}
                         variant="solid"
                         colorScheme={
                           request.status == 'unblocked' ? 'danger' : 'success'
@@ -302,10 +331,18 @@ const PendingRequests = () => {
                         {request.status == 'unblocked' ? 'Block' : 'Unblock'}
                       </Button>
                       <IconButton
+                        isLoading={isDeleting}
                         onClick={() => handleCancelRequest(request._id)}
                         colorScheme="warning"
                         aria-label="Search database"
                         icon={<IoTrashOutline />}
+                      />
+                      <IconButton
+                        isLoading={isChecking}
+                        onClick={() => handleCheckStatus(request._id)}
+                        colorScheme="default"
+                        aria-label="Search database"
+                        icon={<IoShieldCheckmark />}
                       />
                     </HStack>
                   </VStack>
@@ -348,6 +385,7 @@ const PendingRequests = () => {
                             <Button
                               onClick={() => handleOnActionBtnClicked(request)}
                               size="sm"
+                              isLoading={isResponding}
                               variant="solid"
                               colorScheme={
                                 request.status == 'unblocked'
@@ -360,10 +398,18 @@ const PendingRequests = () => {
                                 : 'Unblock'}
                             </Button>
                             <IconButton
+                              isLoading={isDeleting}
                               onClick={() => handleCancelRequest(request._id)}
                               colorScheme="warning"
                               aria-label="Search database"
                               icon={<IoTrashOutline />}
+                            />
+                            <IconButton
+                              isLoading={isChecking}
+                              onClick={() => handleCheckStatus(request._id)}
+                              colorScheme="default"
+                              aria-label="Search database"
+                              icon={<IoShieldCheckmark />}
                             />
                           </HStack>
                         </Td>
