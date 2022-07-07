@@ -50,11 +50,10 @@ const DragBox = () => {
 
   var headers = {
     'content-type': 'multipart/form-data',
-    'x-hi': 'hisdf',
   };
 
   if (isAuthenticated()) {
-    headers['authorization'] = 'Bearer ' + getItem('token');
+    headers['Authorization'] = 'Bearer ' + getItem('token');
   }
   return (
     <VStack>
@@ -66,7 +65,7 @@ const DragBox = () => {
         minHeight={'195px'}
         maxHeight={'500px'}
         footer={false}
-        maxFileSize={10240}
+        maxFileSize={10485760}
         url={uploadUrl}
         method={'POST'}
         config={{
