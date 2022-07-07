@@ -24,7 +24,7 @@ const FileProperties = ({ file }) => {
             </Badge>
           )}
         </Text>
-        <Text>{file.uploaded_at ?? '-'}</Text>
+        <Text>{file.createdAt ?? '-'}</Text>
       </Flex>
     </HStack>
   );

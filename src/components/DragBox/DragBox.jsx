@@ -11,8 +11,6 @@ import {
   Tr,
   VStack,
   useToast,
-  Box,
-  IconButton,
   HStack,
 } from '@chakra-ui/react';
 import { Dropzone, FileItem } from '@dropzone-ui/react';
@@ -52,10 +50,11 @@ const DragBox = () => {
 
   var headers = {
     'content-type': 'multipart/form-data',
+    'x-hi': 'hisdf',
   };
 
   if (isAuthenticated()) {
-    headers['Authorization'] = 'Bearer ' + getItem('token');
+    headers['authorization'] = 'Bearer ' + getItem('token');
   }
   return (
     <VStack>
@@ -67,6 +66,7 @@ const DragBox = () => {
         minHeight={'195px'}
         maxHeight={'500px'}
         footer={false}
+        maxFileSize={10240}
         url={uploadUrl}
         method={'POST'}
         config={{

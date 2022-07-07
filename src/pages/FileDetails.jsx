@@ -97,12 +97,22 @@ const FileDetails = () => {
         isClosable: true,
       });
     } catch (err) {
-      toast({
-        title: 'Failed to download',
-        status: 'error',
-        position: 'top-right',
-        isClosable: true,
-      });
+      console.log(err);
+      if (err.response.status == 403) {
+        toast({
+          title: err.response.data.message,
+          status: 'warning',
+          position: 'top-right',
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: 'Failed to download',
+          status: 'error',
+          position: 'top-right',
+          isClosable: true,
+        });
+      }
     }
   };
 

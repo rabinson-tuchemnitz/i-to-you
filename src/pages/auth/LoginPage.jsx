@@ -19,6 +19,7 @@ import { useForm } from 'react-hook-form';
 
 import AuthLayout from '../../components/Layout/AuthLayout';
 import { removeItem, setItem } from '../../utils/storage';
+import { authUserInfo } from '../../utils/jwt';
 
 const LoginPage = () => {
   let navigate = useNavigate();
@@ -37,8 +38,12 @@ const LoginPage = () => {
     try {
       const response = await loginUser(data);
       removeItem('token');
-      setItem('token', response.data.token);
-      navigate('/');
+      await setItem('token', response.data.token);
+      if (authUserInfo().role == 'admin') {
+        navigate('/pending-requests');
+      } else {
+        navigate('/');
+      }
       toast({
         title: 'Logged in successfully',
         status: 'success',

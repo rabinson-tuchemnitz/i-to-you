@@ -156,7 +156,7 @@ const PendingRequests = () => {
 
   const handleConfirmationAction = async (id, currentStatus) => {
     try {
-      await acceptPendingRequests(id, {
+      const response = await acceptPendingRequests(id, {
         status: currentStatus == 'blocked' ? 'unblocked' : 'blocked',
       });
       //Show the toast message
@@ -164,18 +164,20 @@ const PendingRequests = () => {
         currentStatus === 'blocked'
           ? 'File unblocked successfully'
           : 'File blocked successfully';
+      console.log(toastTitle);
 
+      // // Update the state
+      const newPendingRequests = pendingRequests.filter(
+        (data) => data._id != id,
+      );
+
+      setPendingRequest(newPendingRequests);
       toast({
         title: toastTitle,
         status: 'success',
         duration: 3000,
         isClosable: true,
       });
-      // // Update the state
-      const newPendingRequests = pendingRequests.filter(
-        (data) => data._id != id,
-      );
-      setPendingRequest(newPendingRequests);
     } catch (err) {
       toast({
         title: 'Failed to accept the request',

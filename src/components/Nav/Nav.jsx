@@ -44,9 +44,12 @@ const Nav = () => {
         </Link>
         {isAuthenticated() && (
           <>
-            <Link to={siteMap.UploadedFiles.path}>
-              <Text>My Files</Text>
-            </Link>
+            {authUserInfo().role == 'user' && (
+              <Link to={siteMap.UploadedFiles.path}>
+                <Text>My Files</Text>
+              </Link>
+            )}
+
             {authUserInfo().role == 'admin' && (
               <Link to={siteMap.PendingRequests.path}>
                 <Text>Pending Requests</Text>
