@@ -164,7 +164,6 @@ const PendingRequests = () => {
         currentStatus === 'blocked'
           ? 'File unblocked successfully'
           : 'File blocked successfully';
-      console.log(toastTitle);
 
       // // Update the state
       const newPendingRequests = pendingRequests.filter(
@@ -174,6 +173,7 @@ const PendingRequests = () => {
       setPendingRequest(newPendingRequests);
       toast({
         title: toastTitle,
+        position: 'top-right',
         status: 'success',
         duration: 3000,
         isClosable: true,
@@ -182,6 +182,7 @@ const PendingRequests = () => {
       toast({
         title: 'Failed to accept the request',
         status: 'error',
+        position: 'top-right',
         duration: 3000,
         isClosable: true,
       });

@@ -100,6 +100,7 @@ const DetailBox = ({ file, handleRefreshFile }) => {
 
                 <Button
                   onClick={() => handleDownload(file.download_url, file.name)}
+                  isDisabled={isBlocked}
                   size="sm"
                   variant="solid"
                   colorScheme="secondary"

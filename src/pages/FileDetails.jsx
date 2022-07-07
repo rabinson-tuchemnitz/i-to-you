@@ -179,6 +179,7 @@ const FileDetails = () => {
                       onClick={() =>
                         handleDownload(file.download_path, file.name)
                       }
+                      isDisabled={file.status == 'blocked'}
                       size="sm"
                       variant="solid"
                       colorScheme="secondary"
@@ -205,7 +206,8 @@ const FileDetails = () => {
                   <VStack as="form" onSubmit={handleSubmit(onSubmit)}>
                     <Box alignSelf="flex-start" w="100%">
                       <Heading size="md">
-                        Request to {isBlocked ? 'unblock' : 'block'}
+                        Request to{' '}
+                        {file.status == 'blocked' ? 'unblock' : 'block'}
                       </Heading>
                       <br />
                       <VStack w="100%">
@@ -312,8 +314,10 @@ const FileDetails = () => {
                           type="submit"
                           isLoading={isSubmitting}
                           variant="solid"
-                          colorScheme={isBlocked ? 'success' : 'danger'}>
-                          {isBlocked ? 'Unblock' : 'Block'}
+                          colorScheme={
+                            file.status == 'blocked' ? 'success' : 'danger'
+                          }>
+                          {file.status == 'blocked' ? 'Unblock' : 'Block'}
                         </Button>
                       </Box>
                     </Box>
