@@ -100,7 +100,7 @@ const FileDetails = () => {
       console.log(err);
       if (err.response.status == 403) {
         toast({
-          title: err.response.data.message,
+          title: err.response.statusText,
           status: 'warning',
           position: 'top-right',
           isClosable: true,
