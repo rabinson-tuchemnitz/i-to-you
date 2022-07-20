@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Divider,
   Flex,
@@ -140,9 +141,8 @@ const requests = [
 const PendingRequests = () => {
   const [isLoading, setIsLoading] = useState(true);
   const toast = useToast();
-  const [isChecking, setIsChecking] = useState(false);
-  const [isResponding, setIsResponding] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isActionLoading, setIsActionLoading] = useState(false);
+
   const {
     isOpen: isConfirmationOpen,
     onOpen: onConfirmationOpen,
@@ -159,7 +159,7 @@ const PendingRequests = () => {
 
   const handleConfirmationAction = async (id, currentStatus) => {
     try {
-      setIsResponding(true);
+      setIsActionLoading(true);
       const response = await acceptPendingRequests(id, {
         status: currentStatus == 'blocked' ? 'unblocked' : 'blocked',
       });
@@ -191,13 +191,13 @@ const PendingRequests = () => {
         isClosable: true,
       });
     }
-    setIsResponding(false);
+    setIsActionLoading(false);
     // //Close the modal
     onConfirmationClose();
   };
 
   const handleCancelRequest = async (fileId) => {
-    setIsDeleting(true);
+    setIsActionLoading(true);
     try {
       await rejectPendingRequests(fileId);
       toast({
@@ -214,7 +214,7 @@ const PendingRequests = () => {
         isClosable: true,
       });
     }
-    setIsDeleting(false);
+    setIsActionLoading(false);
   };
   const handleOnActionBtnClicked = (request) => {
     setCurrentRequest(request);
@@ -222,7 +222,7 @@ const PendingRequests = () => {
   };
 
   const handleCheckStatus = async (fileId) => {
-    setIsChecking(true);
+    setIsActionLoading(true);
     try {
       const response = await checkStatus(fileId);
       toast({
@@ -241,7 +241,7 @@ const PendingRequests = () => {
         isClosable: true,
       });
     }
-    setIsChecking(false);
+    setIsActionLoading(false);
   };
   const handleViewBtnClicked = (request) => {
     setCurrentRequest(request);
@@ -288,9 +288,13 @@ const PendingRequests = () => {
         {isLoading && <Spinner />}
         {!isLoading && (
           <Flex flexDir="column" w="100%" p={2}>
-            <Heading as="h2" size="md">
-              Pending Requests
-            </Heading>
+            <Box display="flex" justifyContent={'space-between'}>
+              <Heading as="h2" size="md">
+                Pending Requests
+              </Heading>
+              {isActionLoading && <Spinner />}
+            </Box>
+
             <Divider mb={2} />
 
             {/* For Mobile View */}
@@ -322,7 +326,6 @@ const PendingRequests = () => {
                       <Button
                         onClick={() => handleOnActionBtnClicked(request)}
                         size="sm"
-                        isLoading={isResponding}
                         variant="solid"
                         colorScheme={
                           request.status == 'unblocked' ? 'danger' : 'success'
@@ -331,14 +334,12 @@ const PendingRequests = () => {
                         {request.status == 'unblocked' ? 'Block' : 'Unblock'}
                       </Button>
                       <IconButton
-                        isLoading={isDeleting}
                         onClick={() => handleCancelRequest(request._id)}
                         colorScheme="warning"
                         aria-label="Search database"
                         icon={<IoTrashOutline />}
                       />
                       <IconButton
-                        isLoading={isChecking}
                         onClick={() => handleCheckStatus(request._id)}
                         colorScheme="default"
                         aria-label="Search database"
@@ -385,7 +386,6 @@ const PendingRequests = () => {
                             <Button
                               onClick={() => handleOnActionBtnClicked(request)}
                               size="sm"
-                              isLoading={isResponding}
                               variant="solid"
                               colorScheme={
                                 request.status == 'unblocked'
@@ -398,14 +398,12 @@ const PendingRequests = () => {
                                 : 'Unblock'}
                             </Button>
                             <IconButton
-                              isLoading={isDeleting}
                               onClick={() => handleCancelRequest(request._id)}
                               colorScheme="warning"
                               aria-label="Search database"
                               icon={<IoTrashOutline />}
                             />
                             <IconButton
-                              isLoading={isChecking}
                               onClick={() => handleCheckStatus(request._id)}
                               colorScheme="default"
                               aria-label="Search database"

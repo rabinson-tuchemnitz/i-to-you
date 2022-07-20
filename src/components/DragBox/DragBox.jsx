@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   Button,
+  Flex,
   Table,
   TableContainer,
   Tbody,
@@ -12,6 +13,8 @@ import {
   VStack,
   useToast,
   HStack,
+  Box,
+  Container,
 } from '@chakra-ui/react';
 import { Dropzone, FileItem } from '@dropzone-ui/react';
 import { bytesToSize, getFileDetailUrl } from '../../utils/helper';
@@ -19,6 +22,8 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { IoCopyOutline, IoEyeOutline } from 'react-icons/io5';
 import { isAuthenticated } from '../../utils/jwt';
 import { getItem } from '../../utils/storage';
+import { uploadFile } from '../../apis/file';
+import axios from 'axios';
 
 const DragBox = () => {
   const toast = useToast();
@@ -32,9 +37,23 @@ const DragBox = () => {
     setFiles(incommingFiles);
   };
 
-  const handleUploadFinish = (response) => {
-    setUploadedFiles(response);
+  const handleUploadFile = async () => {
+    const formData = new FormData();
+
+    for (const file of files) {
+      formData.append('file', file.file);
+    }
+
+    try {
+      const response = await uploadFile(formData);
+      console.log(response);
+      const upfiles = response.data.payload.uploaded_files;
+      setUploadedFiles([...upfiles]);
+    } catch (err) {
+      console.log(err);
+    }
   };
+
   const handleDelete = (id) => {
     setFiles(files.filter((x) => x.id !== id));
   };
@@ -48,43 +67,36 @@ const DragBox = () => {
     });
   };
 
-  var headers = {
-    'content-type': 'multipart/form-data',
-  };
-
-  if (isAuthenticated()) {
-    headers['Authorization'] = 'Bearer ' + getItem('token');
-  }
+  // if (isAuthenticated()) {
+  //   headers['Authorization'] = 'Bearer ' + getItem('token');
+  // }
   return (
     <VStack>
-      <Dropzone
-        onChange={updateFiles}
-        value={files}
-        onUploadFinish={handleUploadFinish}
-        label={'Drop Files here or click to browse'}
-        minHeight={'195px'}
-        maxHeight={'500px'}
-        footer={false}
-        maxFileSize={10485760}
-        url={uploadUrl}
-        method={'POST'}
-        config={{
-          headers: {
-            ...headers,
-          },
-        }}
-        color={'#88C0D0'}
-        disableScroll>
-        {files.map((file) => (
-          <FileItem
-            {...file}
-            key={file.id}
-            onDelete={handleDelete}
-            preview
-            resultOnTooltip
-          />
-        ))}
-      </Dropzone>
+      <Flex style={{ position: 'relative', width: '100%' }}>
+        <Dropzone
+          onUploadStart={handleUploadFile}
+          onChange={updateFiles}
+          value={files}
+          label={'Drop Files here or click to browse'}
+          minHeight={'195px'}
+          maxHeight={'500px'}
+          footer={false}
+          url={uploadUrl}
+          method={'GET'}
+          maxFileSize={10485760}
+          color={'#88C0D0'}
+          disableScroll>
+          {files.map((file) => (
+            <FileItem
+              {...file}
+              key={file.id}
+              onDelete={handleDelete}
+              preview
+              resultOnTooltip
+            />
+          ))}
+        </Dropzone>
+      </Flex>
       <br />
       <TableContainer
         w="100%"
@@ -103,26 +115,26 @@ const DragBox = () => {
           </Thead>
           <Tbody>
             {uploadedFiles.map((item, index) => {
-              const response = item.serverResponse.payload.uploaded_files[0];
+              console.log(item);
               return (
-                <Tr key={response.id}>
+                <Tr key={item.id}>
                   <Td>
                     <Text>{index + 1}</Text>
                   </Td>
                   <Td>
-                    <Text>{response.name}</Text>
+                    <Text>{item.name}</Text>
                   </Td>
                   <Td>
-                    <Text>{response.type}</Text>
+                    <Text>{item.type}</Text>
                   </Td>
                   <Td>
-                    <Text>{bytesToSize(response.size_in_bytes)}</Text>
+                    <Text>{bytesToSize(item.size_in_bytes)}</Text>
                   </Td>
                   <Td>
                     <HStack w="100%">
                       <CopyToClipboard
                         onCopy={handleCopyLink}
-                        text={getFileDetailUrl(response.id)}>
+                        text={getFileDetailUrl(item.id)}>
                         <Button
                           leftIcon={<IoCopyOutline />}
                           colorScheme="primary"

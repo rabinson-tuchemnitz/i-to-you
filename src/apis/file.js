@@ -50,3 +50,7 @@ export const checkStatus = async (fileId) => {
     '/files/check-block-status/' + fileId,
   );
 };
+
+export const uploadFile = async (data) => {
+  return await httpClientBlobOptionalAuthInstance.post('/files/upload', data);
+};
