@@ -41,7 +41,9 @@ const DragBox = () => {
     const formData = new FormData();
 
     for (const file of files) {
-      formData.append('file', file.file);
+      if (file.valid) {
+        formData.append('file', file.file);
+      }
     }
 
     try {
@@ -51,6 +53,21 @@ const DragBox = () => {
       setUploadedFiles([...upfiles]);
     } catch (err) {
       console.log(err);
+      if (err.response.status > 400 && err.response.status < 500) {
+        toast({
+          title: 'Check your reqeust',
+          status: 'error',
+          position: 'top-right',
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: 'Something went wrong',
+          status: 'error',
+          position: 'top-right',
+          isClosable: true,
+        });
+      }
     }
   };
 

@@ -20,6 +20,7 @@ import {
 } from '@chakra-ui/react';
 
 const RequestReasonModal = ({ reasons, isReasonsOpen, onReasonsClose }) => {
+  console.log(reasons);
   return (
     <Modal
       size={['lg', 'xl', '2xl']}
@@ -32,7 +33,7 @@ const RequestReasonModal = ({ reasons, isReasonsOpen, onReasonsClose }) => {
         <ModalCloseButton />
         <ModalBody>
           <Accordion defaultIndex={[0]}>
-            {reasons?.owner && (
+            {Object.keys(reasons?.owner).length != 0 && (
               <AccordionItem>
                 <h2>
                   <AccordionButton>
@@ -50,7 +51,6 @@ const RequestReasonModal = ({ reasons, isReasonsOpen, onReasonsClose }) => {
                 <AccordionPanel pb={4}>
                   <VStack>
                     <FormControl>
-                      <FormLabel>Name: {reasons.owner.name}</FormLabel>
                       <FormLabel>Email: {reasons.owner.email}</FormLabel>
                     </FormControl>
                     <FormControl>
